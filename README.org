@@ -1,0 +1,7 @@
+
+* Update deps
+
+  #+BEGIN_SRC shell :results output code
+    clojure -Sdeps '{:deps {olical/depot {:mvn/version "1.8.4"}}}' -m depot.outdated.main
+    clojure -Sdeps '{:deps {olical/depot {:mvn/version "1.8.4"}}}' -m depot.outdated.main --update
+  #+END_SRC
