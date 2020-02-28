@@ -18,7 +18,9 @@
 
 
 (def handler
-  (-> #'routes))
+  (-> #'routes
+      (ring.middleware.defaults/wrap-defaults
+       ring.middleware.defaults/site-defaults)))
 
 
 (defn -main [& [port]]

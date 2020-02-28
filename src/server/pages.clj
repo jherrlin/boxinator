@@ -25,7 +25,8 @@
     (include-css "//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic")
     (include-css "//fonts.googleapis.com/css?family=Roboto+Condensed:400,300")]
    [:body {:style "height: 100%"}
-    [:div#app "asd"]
+    [:div#app {:data-csrf-token (:anti-forgery-token req)
+               :style "height: 100%"} "loading..."]
     (->> "public/js/manifest.edn"
          (read-edn-file)
          (map :output-name)

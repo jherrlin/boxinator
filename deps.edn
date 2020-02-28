@@ -15,7 +15,6 @@
         hiccup {:mvn/version "1.0.5"}
         com.datomic/datomic-free {:mvn/version "0.9.5703.21"}
 
-
         re-frame {:mvn/version "0.11.0"}
         reagent {:mvn/version "0.9.1"}
         reagent-utils {:mvn/version "0.3.3"}
