@@ -4,13 +4,14 @@
 
 
 (defn label [hoc-component]
-  (fn [{:keys [label error-text required? valid? show-validation?]
+  (fn [{:keys [label error-text required? valid? show-validation? visited?]
         :or {show-validation? false
              required? false}
         :as props}]
     {:pre [(string? label)]}
     [:div
      [:label {:style {:color (when (and (not valid?)
+                                        visited?
                                         error-text
                                         show-validation?)
                                "#a94442")}}
@@ -19,7 +20,9 @@
 
 
 (defn focus-when-empty [hoc-component]
-  (fn [{:keys [value id focus?] :as props}]
+  (fn [{:keys [value id focus?]
+        :or {focus? false}
+        :as props}]
     {:pre [(string? id)]}
     (reagent/create-class
      {:display-name "focus-when-empty"
@@ -31,7 +34,7 @@
            #(.focus (.getElementById js/document id)))))
 
       :reagent-render
-      (fn []
+      (fn [props]
         [hoc-component props])})))
 
 
