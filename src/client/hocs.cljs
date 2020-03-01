@@ -19,13 +19,14 @@
 
 
 (defn focus-when-empty [hoc-component]
-  (fn [{:keys [value id] :as props}]
+  (fn [{:keys [value id focus?] :as props}]
     {:pre [(string? id)]}
     (reagent/create-class
      {:display-name "focus-when-empty"
       :component-did-mount
       (fn []
-        (when  (empty? value)
+        (when (and (empty? value)
+                   focus?)
           (js/requestAnimationFrame
            #(.focus (.getElementById js/document id)))))
 
