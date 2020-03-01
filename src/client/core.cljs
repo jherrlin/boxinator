@@ -1,9 +1,96 @@
 (ns client.core
+  (:refer-clojure :exclude [name])
   (:require
+   [client.color-picker :as color-picker]
+   [medley.core :as medley]
+   [client.events :as events]
+   [client.forms :as forms]
+   [client.inputs :as inputs]
+   [clojure.spec.alpha :as s]
+   [clojure.string :as str]
+   [clojure.test.check.generators :as gen]
    [re-com.core :as re-com]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]
    [taoensso.sente :as sente]))
+
+
+(s/def ::non-blank-string (s/and string? (complement str/blank?)))
+
+
+(defn view-a-name []
+  (let [name          @(re-frame/subscribe [::events/name])
+        name-visited? @(re-frame/subscribe [::events/name-visited?])]
+    [forms/text
+     {:label            "Name"
+      :id               "view-a-name"
+      :placeholder      "Name"
+      :value            name
+      :valid?           (s/valid? ::non-blank-string name)
+      :on-change        #(re-frame/dispatch [::events/name %])
+      :required?        true
+      :show-validation? true
+      :focus?           true
+      :visited?         true ;; As `focus?` is true, its logic to have this true
+      :on-focus         #(re-frame/dispatch [::events/name-visited? true])
+      :error-text       "A name needs to be provided."}]))
+
+
+(s/def ::weight pos-int?)
+(defn view-a-weight []
+  (let [weight          @(re-frame/subscribe [::events/weight])
+        weight-visited? @(re-frame/subscribe [::events/weight-visited?])]
+    [forms/number
+     {:label            "Weight"
+      :id               "view-a-weight"
+      :placeholder      "Weight"
+      :value            (str (or weight "0"))
+      :valid?           (s/valid? ::weight weight)
+      :on-change        #(re-frame/dispatch [::events/weight (js/parseInt %)])
+      :on-blur          #(when (or (> 0 weight)
+                                   (js/Number.isNaN weight))
+                           (re-frame/dispatch [::events/weight 0]))
+      :required?        true
+      :show-validation? true
+      :visited?         weight-visited?
+      :on-focus         #(re-frame/dispatch [::events/weight-visited? true])
+      :error-text       "Needs to be a positive number."}]))
+
+
+(s/def ::id (s/with-gen medley/uuid? (fn [] gen/uuid)))
+(s/def ::name ::non-blank-string)
+(s/def ::country (s/keys :req-un [::id ::name]))
+(defn view-a-countries []
+  (let [countries                @(re-frame/subscribe [:countries])
+        {:keys [id] :as country} @(re-frame/subscribe [::events/country])
+        country-visited?         @(re-frame/subscribe [::events/country-visited?])]
+    [forms/select
+     {:id               "view-a-countries"
+      :label            "Country"
+      :on-select        #(re-frame/dispatch [::events/country %])
+      :selected-id      id
+      :choices          countries
+      :required?        true
+      :show-validation? true
+      :valid?           (s/valid? ::country country)
+      :on-focus         #(re-frame/dispatch [::events/country-visited? true])
+      :visited?         country-visited?
+      :error-text       "Select a country."}]))
+
+
+
+(defn view-a []
+  (let [
+
+        weight        @(re-frame/subscribe [::events/weight])
+        rgb           @(re-frame/subscribe [::events/rgb])]
+    [:div
+     [view-a-name]
+     [view-a-weight]
+     [view-a-countries]
+     ]
+    )
+  )
 
 
 (defn app-init []
@@ -12,7 +99,33 @@
    :max-height "100%"
    :width "100%"
    :class "container"
-   :child [:div "New app using re-frame, re-com!"]])
+   ;; :attr {:on-click #(js/console.log "john-debug: attr" )}
+   :child [view-a]
+   #_[:div
+      ;; [color-picker/ui]
+      [forms/text {:label "hejsan"
+                   :id "1234abc"
+                   :placeholder "Placeholder"
+                   :valid? false
+                   :focus? true
+                   :show-validation? true
+                   :visited? true
+                   :required? true
+                   :error-text "erro"}]
+
+      [forms/number {:label "hejsan"
+                     :id "1234abc"
+                     :valid? false
+                     :focus? true
+                     :value "0"
+                     :show-validation? true
+                     :visited? true
+                     :required? true
+                     :error-text "erro"}]
+
+      [forms/select {:label "Select"
+                     :choices (gen/generate (s/gen ::inputs/choices))}]
+      ]])
 
 
 (defn ^:dev/after-load mount-root []
@@ -22,4 +135,5 @@
 
 
 (defn init []
+  (re-frame/dispatch-sync [::events/initialize-db])
   (mount-root))
