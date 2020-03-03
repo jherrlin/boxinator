@@ -18,7 +18,19 @@
 (s/def ::non-blank-string (s/and string? (complement str/blank?)))
 
 
-(defn view-a-name []
+(re-frame/reg-sub
+ ::save?
+ (fn [db _]
+   (get db ::save?)))
+
+(re-frame/reg-event-db
+ ::save?
+ (fn [db [_ b]]
+   (assoc db ::save? b)))
+
+
+
+(defn view-a-name [save?]
   (let [name          @(re-frame/subscribe [::events/name])
         name-visited? @(re-frame/subscribe [::events/name-visited?])]
     [forms/text
@@ -29,7 +41,7 @@
       :valid?           (s/valid? ::non-blank-string name)
       :on-change        #(re-frame/dispatch [::events/name %])
       :required?        true
-      :show-validation? true
+      :show-validation? save?
       :focus?           true
       :visited?         true ;; As `focus?` is true, its logic to have this true
       :on-focus         #(re-frame/dispatch [::events/name-visited? true])
@@ -37,7 +49,7 @@
 
 
 (s/def ::weight pos-int?)
-(defn view-a-weight []
+(defn view-a-weight [save?]
   (let [weight          @(re-frame/subscribe [::events/weight])
         weight-visited? @(re-frame/subscribe [::events/weight-visited?])]
     [forms/number
@@ -51,30 +63,32 @@
                                    (js/Number.isNaN weight))
                            (re-frame/dispatch [::events/weight 0]))
       :required?        true
-      :show-validation? true
-      :visited?         weight-visited?
+      :show-validation? save?
+      :visited?         true
       :on-focus         #(re-frame/dispatch [::events/weight-visited? true])
       :error-text       "Needs to be a positive number."}]))
 
 
-(defn view-a-box-colour []
+(defn view-a-box-colour [save?]
   (let [{:keys [r g] :as color} @(re-frame/subscribe [::color-picker/selected-color])]
     [forms/text
-     {:label       "Box colour"
-      :id          "view-a-box-colour"
-      :placeholder "Click to show colour picker."
-      :value       (when color (str r "," g "," 0))
-      :visited?    true ;; As `focus?` is true, its logic to have this true
-      :on-focus    #(re-frame/dispatch [::color-picker/show-picker? true])}]))
+     {:label            "Box colour"
+      :id               "view-a-box-colour"
+      :placeholder      "Click to show colour picker."
+      :value            (when color (str r "," g "," 0))
+      :show-validation? save?
+      :valid?           (s/valid? map? color)
+      :visited?         true ;; As `focus?` is true, its logic to have this true
+      :error-text       "Select a color"
+      :on-focus         #(re-frame/dispatch [::color-picker/show-picker? true])}]))
 
 
 (s/def ::id (s/with-gen medley/uuid? (fn [] gen/uuid)))
 (s/def ::name ::non-blank-string)
 (s/def ::country (s/keys :req-un [::id ::name]))
-(defn view-a-countries []
+(defn view-a-countries [save?]
   (let [countries                @(re-frame/subscribe [:countries])
-        {:keys [id] :as country} @(re-frame/subscribe [::events/country])
-        country-visited?         @(re-frame/subscribe [::events/country-visited?])]
+        {:keys [id] :as country} @(re-frame/subscribe [::events/country])]
     [forms/select
      {:id               "view-a-countries"
       :label            "Country"
@@ -82,20 +96,26 @@
       :selected-id      id
       :choices          countries
       :required?        true
-      :show-validation? true
+      :show-validation? save?
       :valid?           (s/valid? ::country country)
       :on-focus         #(re-frame/dispatch [::events/country-visited? true])
-      :visited?         country-visited?
+      :visited?         true
       :error-text       "Select a country."}]))
 
 
 (defn view-a []
-  [:div
-   [view-a-name]
-   [view-a-weight]
-   [view-a-box-colour]
-   [color-picker/ui]
-   [view-a-countries]])
+  (let [save? @(re-frame/subscribe [::save?])]
+    [:div
+     [view-a-name save?]
+     [view-a-weight save?]
+     [view-a-box-colour save?]
+     [color-picker/ui]
+     [view-a-countries save?]
+     [:div {:style {:display "flex"
+                    :justify-content "flex-end"}}
+      [:button.btn.btn-default
+       {:on-click #(re-frame/dispatch [::save? true])}
+       "Save"]]]))
 
 
 (defn app-init []
