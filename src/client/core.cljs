@@ -57,6 +57,17 @@
       :error-text       "Needs to be a positive number."}]))
 
 
+(defn view-a-box-colour []
+  (let [{:keys [r g] :as color} @(re-frame/subscribe [::color-picker/selected-color])]
+    [forms/text
+     {:label       "Box colour"
+      :id          "view-a-box-colour"
+      :placeholder "Click to show colour picker."
+      :value       (when color (str r "," g "," 0))
+      :visited?    true ;; As `focus?` is true, its logic to have this true
+      :on-focus    #(re-frame/dispatch [::color-picker/show-picker? true])}]))
+
+
 (s/def ::id (s/with-gen medley/uuid? (fn [] gen/uuid)))
 (s/def ::name ::non-blank-string)
 (s/def ::country (s/keys :req-un [::id ::name]))
@@ -78,19 +89,13 @@
       :error-text       "Select a country."}]))
 
 
-
 (defn view-a []
-  (let [
-
-        weight        @(re-frame/subscribe [::events/weight])
-        rgb           @(re-frame/subscribe [::events/rgb])]
-    [:div
-     [view-a-name]
-     [view-a-weight]
-     [view-a-countries]
-     ]
-    )
-  )
+  [:div
+   [view-a-name]
+   [view-a-weight]
+   [view-a-box-colour]
+   [color-picker/ui]
+   [view-a-countries]])
 
 
 (defn app-init []
@@ -99,33 +104,7 @@
    :max-height "100%"
    :width "100%"
    :class "container"
-   ;; :attr {:on-click #(js/console.log "john-debug: attr" )}
-   :child [view-a]
-   #_[:div
-      ;; [color-picker/ui]
-      [forms/text {:label "hejsan"
-                   :id "1234abc"
-                   :placeholder "Placeholder"
-                   :valid? false
-                   :focus? true
-                   :show-validation? true
-                   :visited? true
-                   :required? true
-                   :error-text "erro"}]
-
-      [forms/number {:label "hejsan"
-                     :id "1234abc"
-                     :valid? false
-                     :focus? true
-                     :value "0"
-                     :show-validation? true
-                     :visited? true
-                     :required? true
-                     :error-text "erro"}]
-
-      [forms/select {:label "Select"
-                     :choices (gen/generate (s/gen ::inputs/choices))}]
-      ]])
+   :child [view-a]])
 
 
 (defn ^:dev/after-load mount-root []

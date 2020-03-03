@@ -23,6 +23,18 @@
    (get db :color)))
 
 
+(re-frame/reg-event-db
+ ::show-picker?
+ (fn [db [_ b]]
+   (assoc db ::show-picker? b)))
+
+
+(re-frame/reg-sub
+ ::show-picker?
+ (fn [db _]
+   (get db ::show-picker?)))
+
+
 (defn rgb-str [r g]
   (str "rgb(" (str/join "," [r g 0]) ")"))
 
@@ -53,17 +65,14 @@
                    :border-width "2px"}}]))
 
 
-(defn details []
-  (let [{:keys [r g]}
-        @(re-frame/subscribe [::selected-color])]
-    [:div {:style {:margin-left "5px"
-                   :margin-top "5px"}}
-     (rgb-str r g)]))
-
-
 (defn ui []
-  [:div {:style {:display "flex"}}
-   [pallet]
-   [:div {:style {:flex-direction "row"}}
-    [selected-color]
-    [details]]])
+  (let [show-picker? @(re-frame/subscribe [::show-picker?])]
+    (when show-picker?
+      [:div
+       [:div {:style {:display "flex"}}
+        [pallet]
+        [selected-color]]
+       [:button.btn.btn-default
+        {:on-click #(re-frame/dispatch [::show-picker? false])
+         :style {:margin-top "5px" :width "100%"}}
+        "Done"]])))
