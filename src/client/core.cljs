@@ -18,6 +18,11 @@
 (s/def ::non-blank-string (s/and string? (complement str/blank?)))
 
 
+(comment
+  [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db))]
+  )
+
+
 (re-frame/reg-sub
  ::save?
  (fn [db _]
@@ -77,6 +82,7 @@
       :placeholder      "Click to show colour picker."
       :value            (when color (str r "," g "," 0))
       :show-validation? save?
+      ;; :required?        true
       :valid?           (s/valid? map? color)
       :visited?         true ;; As `focus?` is true, its logic to have this true
       :error-text       "Select a color"
@@ -103,9 +109,11 @@
       :error-text       "Select a country."}]))
 
 
+
+
 (defn view-a []
   (let [save? @(re-frame/subscribe [::save?])]
-    [:div
+    [:div {:style {:min-width "300px"}}
      [view-a-name save?]
      [view-a-weight save?]
      [view-a-box-colour save?]
@@ -119,12 +127,13 @@
 
 
 (defn app-init []
-  [re-com/box
+  [re-com/h-box
    :height "100%"
-   :max-height "100%"
    :width "100%"
    :class "container"
-   :child [view-a]])
+   :children [[view-a]
+              [:div {:style {:width "100%" :display "flex" :justify-content "flex-end"}}
+               [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db))]]]])
 
 
 (defn ^:dev/after-load mount-root []
