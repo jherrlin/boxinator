@@ -34,7 +34,6 @@
    (assoc db ::save? b)))
 
 
-
 (defn view-a-name [save?]
   (let [name          @(re-frame/subscribe [::events/name])
         name-visited? @(re-frame/subscribe [::events/name-visited?])]
@@ -82,7 +81,8 @@
       :placeholder      "Click to show colour picker."
       :value            (when color (str r "," g "," 0))
       :show-validation? save?
-      ;; :required?        true
+      :required?        true
+      :on-change        #()  ;; no-op
       :valid?           (s/valid? map? color)
       :visited?         true ;; As `focus?` is true, its logic to have this true
       :error-text       "Select a color"
@@ -107,8 +107,6 @@
       :on-focus         #(re-frame/dispatch [::events/country-visited? true])
       :visited?         true
       :error-text       "Select a country."}]))
-
-
 
 
 (defn view-a []

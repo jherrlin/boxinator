@@ -15,6 +15,7 @@
   {:pre [(string? id)]}
   [:input.form-control
    {:id id
+    :autocomplete "off"
     :on-change #(on-change (.. % -target -value))
     :on-focus on-focus
     :on-blur on-blur
