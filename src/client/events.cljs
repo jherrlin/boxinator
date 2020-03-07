@@ -55,6 +55,18 @@
                  :on-failure      [::http-failure]}}))
 
 
+(re-frame/reg-fx
+ :interval
+ (let [live-intervals (atom {})]
+   (fn [{:keys [action id frequency event] :as m}]
+     (println "in here")
+     (js/console.log "john-debug: YO!" m)
+     (if (= action :start)
+       (swap! live-intervals assoc id (js/setInterval #(re-frame/dispatch event) frequency))
+       (do (js/clearInterval (get @live-intervals id))
+           (swap! live-intervals dissoc id))))))
+
+
 (re-frame/reg-event-fx
  ::get
  (fn [{:keys [db]} [_]]
@@ -67,11 +79,38 @@
                  :on-failure      [::http-failure]}}))
 
 
+(re-frame/reg-event-fx
+ :start-poll
+ (fn [{:keys [db] :as cofx} [k]]
+   {:interval {:action    :start
+               :id        :get-query
+               :frequency 5000
+               :event     [::get]}}))
+
+
+(re-frame/reg-event-fx
+ :stop-poll
+ (fn [{:keys [db] :as cofx} [k]]
+   {:interval {:action    :stop
+               :id        :get-query}}))
+
+
+
+
+
+
+
 (comment
-  (re-frame/dispatch [::get])
-  (re-frame/dispatch [::save {:boxinator/id (medley/random-uuid)
-                              :boxinator/name "JOHN"
-                              :boxinator/weight 777
-                              :boxinator/color "1,2,3"
-                              :boxinator/country (medley/random-uuid)}])
+  (do
+    (re-frame/dispatch [::get])
+    (re-frame/dispatch [:start-poll]))
+
+  (re-frame/dispatch [:stop-poll])
+
+
+  (re-frame/dispatch [::save {:box/id      (medley/random-uuid)
+                              :box/name    "JOHN"
+                              :box/weight  777
+                              :box/color   "1,2,3"
+                              :box/country (medley/random-uuid)}])
   )

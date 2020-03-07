@@ -13,38 +13,38 @@
 
 (d/transact
  conn
- [{:db/ident       :boxinator/id
+ [{:db/ident       :box/id
    :db/cardinality :db.cardinality/one
    :db/unique      :db.unique/identity
    :db/valueType   :db.type/uuid
    :db/doc         "Entity id"}
 
-  {:db/ident       :boxinator/name
+  {:db/ident       :box/name
    :db/cardinality :db.cardinality/one
    :db/valueType   :db.type/string}
 
-  {:db/ident       :boxinator/color
+  {:db/ident       :box/color
    :db/cardinality :db.cardinality/one
    :db/valueType   :db.type/string}
 
-  {:db/ident       :boxinator/weight
+  {:db/ident       :box/weight
    :db/cardinality :db.cardinality/one
    :db/valueType   :db.type/long}
 
-  {:db/ident       :boxinator/country
+  {:db/ident       :box/country
    :db/cardinality :db.cardinality/one
    :db/valueType   :db.type/uuid}])
 
 
 (defn get-boxes []
   (let [db (d/db conn)]
-    (d/q '[:find [(pull ?e [:boxinator/id
-                            :boxinator/name
-                            :boxinator/weight
-                            :boxinator/color
-                            :boxinator/country])
+    (d/q '[:find [(pull ?e [:box/id
+                            :box/name
+                            :box/weight
+                            :box/color
+                            :box/country])
                   ...]
-           :where [?e :boxinator/id]]
+           :where [?e :box/id]]
          db)))
 
 
@@ -54,11 +54,11 @@
 
 (comment
   (save-box
-   {:boxinator/id (medley/random-uuid)
-    :boxinator/name "John!"
-    :boxinator/weight 666
-    :boxinator/color "1,2,3"
-    :boxinator/country (medley/random-uuid)})
+   {:box/id (medley/random-uuid)
+    :box/name "John!"
+    :box/weight 666
+    :box/color "1,2,3"
+    :box/country (medley/random-uuid)})
 
   (get-boxes)
 
