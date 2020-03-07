@@ -1,10 +1,8 @@
 (ns client.inputs
   (:require
-   [clojure.string :as str]
    [system.boxinator :as boxinator]
    [clojure.spec.alpha :as s]
-   [medley.core :as medley]
-   [clojure.test.check.generators :as gen]))
+   [medley.core :as medley]))
 
 
 (defn text [{:keys [attr id on-blur on-change on-focus placeholder value]
@@ -45,22 +43,6 @@
     attr)])
 
 
-(s/def ::non-blank-string (s/and string? (complement str/blank?)))
-(s/def ::id (s/with-gen medley/uuid? (fn [] gen/uuid)))
-(s/def ::name ::non-blank-string)
-(s/def ::choice (s/keys :req-un [::id ::name]))
-(s/def ::choices
-  (s/with-gen
-    (s/and
-     (s/map-of ::id ::choice)
-     (s/every (fn [[k v]] (= k (:id v)))))
-    #(gen/fmap (fn [c]
-                 (apply hash-map (->> c
-                                      (map (juxt :id identity))
-                                      (flatten))))
-               (s/gen (s/coll-of ::choice)))))
-
-
 (defn select [{:keys [attr choices id on-focus on-select selected-id]
                :or {on-select #(js/console.log "no `on-select` fn. But selected:" %)
                     on-focus (fn [] (js/console.log "on-focus"))}
@@ -82,11 +64,3 @@
      ^{:key (str "select-value-" id)}
      [:option {:value id :selected (when selected? true)}
       name])])
-
-
-
-(comment
-  (gen/generate (s/gen ::choices))  ;; Single
-  (gen/sample (s/gen ::choices))    ;; Multi
-  (s/valid? ::choices {})
-  )
