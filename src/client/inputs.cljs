@@ -6,7 +6,7 @@
    [clojure.test.check.generators :as gen]))
 
 
-(defn text [{:keys [id value placeholder on-change on-focus on-blur attr]
+(defn text [{:keys [attr id on-blur on-change on-focus placeholder value]
              :or {placeholder ""
                   on-change #(js/console.log "text: "  (.. % -target -value))
                   on-focus (fn [] (js/console.log "on-focus"))
@@ -25,7 +25,7 @@
     attr)])
 
 
-(defn number [{:keys [id value placeholder on-change on-focus on-blur]
+(defn number [{:keys [attr id on-blur on-change on-focus placeholder value]
                :or {placeholder ""
                     on-change #(js/console.log "numer: "  (.. % -target -value))
                     on-focus (fn [] (js/console.log "on-focus"))
@@ -33,13 +33,15 @@
                :as props}]
   {:pre [(string? id)]}
   [:input.form-control
-   {:id id
-    :on-change #(on-change (.. % -target -value))
-    :on-focus on-focus
-    :on-blur on-blur
-    :type "number"
-    :placeholder placeholder
-    :value value}])
+   (merge
+    {:id id
+     :on-change #(on-change (.. % -target -value))
+     :on-focus on-focus
+     :on-blur on-blur
+     :type "number"
+     :placeholder placeholder
+     :value value}
+    attr)])
 
 
 (s/def ::non-blank-string (s/and string? (complement str/blank?)))
@@ -58,17 +60,19 @@
                (s/gen (s/coll-of ::choice)))))
 
 
-(defn select [{:keys [id choices selected-id on-select on-focus]
+(defn select [{:keys [attr choices id on-focus on-select selected-id]
                :or {on-select #(js/console.log "no `on-select` fn. But selected:" %)
                     on-focus (fn [] (js/console.log "on-focus"))}
                :as props}]
   {:pre [(s/valid? ::choices choices)
          (string? id)]}
-  [:select {:id        id
-            :on-focus  on-focus
-            :class     "form-control"
-            :on-change #(let [choice-id (-> % (.-target) (.-value) (medley/uuid))]
-                          (on-select (get choices choice-id)))}
+  [:select (merge
+            {:id        id
+             :on-focus  on-focus
+             :class     "form-control"
+             :on-change #(let [choice-id (-> % (.-target) (.-value) (medley/uuid))]
+                           (on-select (get choices choice-id)))}
+            attr)
    (for [{:keys [id name selected?]}
          (cond-> choices
            selected-id (assoc-in [selected-id :selected?] true)
