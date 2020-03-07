@@ -1,6 +1,7 @@
 (ns client.inputs
   (:require
    [clojure.string :as str]
+   [system.boxinator :as boxinator]
    [clojure.spec.alpha :as s]
    [medley.core :as medley]
    [clojure.test.check.generators :as gen]))
@@ -64,7 +65,7 @@
                :or {on-select #(js/console.log "no `on-select` fn. But selected:" %)
                     on-focus (fn [] (js/console.log "on-focus"))}
                :as props}]
-  {:pre [(s/valid? ::choices choices)
+  {:pre [(s/valid? :boxinator/countries choices)
          (string? id)]}
   [:select (merge
             {:id        id
@@ -73,7 +74,8 @@
              :on-change #(let [choice-id (-> % (.-target) (.-value) (medley/uuid))]
                            (on-select (get choices choice-id)))}
             attr)
-   (for [{:keys [id name selected?]}
+   (for [{:country/keys [id name]
+          :keys [selected?]}
          (cond-> choices
            selected-id (assoc-in [selected-id :selected?] true)
            :always (vals))]

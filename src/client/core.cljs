@@ -15,9 +15,6 @@
    [taoensso.sente :as sente]))
 
 
-(s/def ::non-blank-string (s/and string? (complement str/blank?)))
-
-
 (comment
   [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db))]
   )
@@ -41,7 +38,7 @@
       :id          "view-a-name"
       :placeholder "Name"
       :value       name
-      :valid?      (s/valid? ::non-blank-string name)
+      :valid?      (s/valid? :box/name name)
       :on-change   #(re-frame/dispatch [::events/name %])
       :required?   true
       :focus?      true
@@ -57,7 +54,7 @@
       :id          "view-a-weight"
       :placeholder "Weight"
       :value       (str (or weight "0"))
-      :valid?      (s/valid? ::weight weight)
+      :valid?      (s/valid? :box/weight weight)
       :on-change   #(re-frame/dispatch [::events/weight (js/parseInt %)])
       :on-blur     #(when (or (> 0 weight)
                               (js/Number.isNaN weight))
@@ -76,16 +73,13 @@
       :value       (when color (str r "," g "," 0))
       :required?   true
       :on-change   #() ;; no-op
-      :valid?      (s/valid? map? color)
+      :valid?      (s/valid? :box/color color)
       :visited?    save?
       :error-text  "Select a color"
       :on-focus    #(re-frame/dispatch [::color-picker/show-picker? true])
       :attr        {:autoComplete "off"}}]))
 
 
-(s/def ::id (s/with-gen medley/uuid? (fn [] gen/uuid)))
-(s/def ::name ::non-blank-string)
-(s/def ::country (s/keys :req-un [::id ::name]))
 (defn view-a-countries [save?]
   (let [countries                @(re-frame/subscribe [:countries])
         {:keys [id] :as country} @(re-frame/subscribe [::events/country])]
@@ -96,7 +90,7 @@
       :selected-id id
       :choices     countries
       :required?   true
-      :valid?      (s/valid? ::country country)
+      :valid?      (s/valid? :boxinator/country country)
       :visited?    save?
       :error-text  "Select a country."}]))
 

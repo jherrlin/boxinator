@@ -2,14 +2,22 @@
 
 
 (def countries
-  {#uuid "5ab0c590-e6f6-41ae-bbcc-f3155e04e74f"
-   {:id #uuid "5ab0c590-e6f6-41ae-bbcc-f3155e04e74f" :name "Sweden"}
-   #uuid "747b3c56-d7c7-49e0-8b4f-7bac81d013d3"
-   {:id #uuid "747b3c56-d7c7-49e0-8b4f-7bac81d013d3" :name "China"}
-   #uuid "981a8b1e-df7d-4c0a-89ea-e2f36f7a9d2b"
-   {:id #uuid "981a8b1e-df7d-4c0a-89ea-e2f36f7a9d2b" :name "Brazil"}
-   #uuid "79c5220b-7ffe-420f-bb0f-8e31ac0844a3"
-   {:id #uuid "79c5220b-7ffe-420f-bb0f-8e31ac0844a3" :name "Austalia"}})
+  {#uuid "958e0376-eb26-428a-8147-7efc04e8d3e5"
+   #:country{:id #uuid "958e0376-eb26-428a-8147-7efc04e8d3e5",
+             :multiplier 1.3,
+             :name "Sweden"},
+   #uuid "837225a9-f74d-447e-87bc-49c0b58ec972"
+   #:country{:id #uuid "837225a9-f74d-447e-87bc-49c0b58ec972",
+             :multiplier 4,
+             :name "China"},
+   #uuid "b1ace9ef-c1fa-4c00-94fc-97db4618c245"
+   #:country{:id #uuid "b1ace9ef-c1fa-4c00-94fc-97db4618c245",
+             :multiplier 8.6
+             :name "Brazil"},
+   #uuid "8b759afd-1e0e-40ef-aecb-a3e48db4056e"
+   #:country{:id #uuid "8b759afd-1e0e-40ef-aecb-a3e48db4056e",
+             :multiplier 7.2
+             :name "Australia"}})
 
 
 (def app-db
