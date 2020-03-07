@@ -2,13 +2,13 @@
   (:refer-clojure :exclude [name])
   (:require
    [client.color-picker :as color-picker]
-   [medley.core :as medley]
    [client.events :as events]
    [client.forms :as forms]
    [client.inputs :as inputs]
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
    [clojure.test.check.generators :as gen]
+   [medley.core :as medley]
    [re-com.core :as re-com]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]
@@ -35,58 +35,52 @@
 
 
 (defn view-a-name [save?]
-  (let [name          @(re-frame/subscribe [::events/name])
-        name-visited? @(re-frame/subscribe [::events/name-visited?])]
+  (let [name @(re-frame/subscribe [::events/name])]
     [forms/text
-     {:label            "Name"
-      :id               "view-a-name"
-      :placeholder      "Name"
-      :value            name
-      :valid?           (s/valid? ::non-blank-string name)
-      :on-change        #(re-frame/dispatch [::events/name %])
-      :required?        true
-      :show-validation? save?
-      :focus?           true
-      :visited?         true ;; As `focus?` is true, its logic to have this true
-      :on-focus         #(re-frame/dispatch [::events/name-visited? true])
-      :error-text       "A name needs to be provided."}]))
+     {:label       "Name"
+      :id          "view-a-name"
+      :placeholder "Name"
+      :value       name
+      :valid?      (s/valid? ::non-blank-string name)
+      :on-change   #(re-frame/dispatch [::events/name %])
+      :required?   true
+      :focus?      true
+      :visited?    save?
+      :error-text  "A name needs to be provided."}]))
 
 
 (s/def ::weight pos-int?)
 (defn view-a-weight [save?]
-  (let [weight          @(re-frame/subscribe [::events/weight])
-        weight-visited? @(re-frame/subscribe [::events/weight-visited?])]
+  (let [weight @(re-frame/subscribe [::events/weight])]
     [forms/number
-     {:label            "Weight"
-      :id               "view-a-weight"
-      :placeholder      "Weight"
-      :value            (str (or weight "0"))
-      :valid?           (s/valid? ::weight weight)
-      :on-change        #(re-frame/dispatch [::events/weight (js/parseInt %)])
-      :on-blur          #(when (or (> 0 weight)
-                                   (js/Number.isNaN weight))
-                           (re-frame/dispatch [::events/weight 0]))
-      :required?        true
-      :show-validation? save?
-      :visited?         true
-      :on-focus         #(re-frame/dispatch [::events/weight-visited? true])
-      :error-text       "Needs to be a positive number."}]))
+     {:label       "Weight"
+      :id          "view-a-weight"
+      :placeholder "Weight"
+      :value       (str (or weight "0"))
+      :valid?      (s/valid? ::weight weight)
+      :on-change   #(re-frame/dispatch [::events/weight (js/parseInt %)])
+      :on-blur     #(when (or (> 0 weight)
+                              (js/Number.isNaN weight))
+                      (re-frame/dispatch [::events/weight 0]))
+      :required?   true
+      :visited?    save?
+      :error-text  "Needs to be a positive number."}]))
 
 
 (defn view-a-box-colour [save?]
   (let [{:keys [r g] :as color} @(re-frame/subscribe [::color-picker/selected-color])]
     [forms/text
-     {:label            "Box colour"
-      :id               "view-a-box-colour"
-      :placeholder      "Click to show colour picker."
-      :value            (when color (str r "," g "," 0))
-      :show-validation? save?
-      :required?        true
-      :on-change        #()  ;; no-op
-      :valid?           (s/valid? map? color)
-      :visited?         true ;; As `focus?` is true, its logic to have this true
-      :error-text       "Select a color"
-      :on-focus         #(re-frame/dispatch [::color-picker/show-picker? true])}]))
+     {:label       "Box colour"
+      :id          "view-a-box-colour"
+      :placeholder "Click to show colour picker."
+      :value       (when color (str r "," g "," 0))
+      :required?   true
+      :on-change   #() ;; no-op
+      :valid?      (s/valid? map? color)
+      :visited?    save?
+      :error-text  "Select a color"
+      :on-focus    #(re-frame/dispatch [::color-picker/show-picker? true])
+      :attr        {:autoComplete "off"}}]))
 
 
 (s/def ::id (s/with-gen medley/uuid? (fn [] gen/uuid)))
@@ -96,17 +90,15 @@
   (let [countries                @(re-frame/subscribe [:countries])
         {:keys [id] :as country} @(re-frame/subscribe [::events/country])]
     [forms/select
-     {:id               "view-a-countries"
-      :label            "Country"
-      :on-select        #(re-frame/dispatch [::events/country %])
-      :selected-id      id
-      :choices          countries
-      :required?        true
-      :show-validation? save?
-      :valid?           (s/valid? ::country country)
-      :on-focus         #(re-frame/dispatch [::events/country-visited? true])
-      :visited?         true
-      :error-text       "Select a country."}]))
+     {:id          "view-a-countries"
+      :label       "Country"
+      :on-select   #(re-frame/dispatch [::events/country %])
+      :selected-id id
+      :choices     countries
+      :required?   true
+      :valid?      (s/valid? ::country country)
+      :visited?    save?
+      :error-text  "Select a country."}]))
 
 
 (defn view-a []

@@ -4,16 +4,14 @@
 
 
 (defn label [hoc-component]
-  (fn [{:keys [label error-text required? valid? show-validation? visited?]
-        :or {show-validation? false
-             required? false}
+  (fn [{:keys [error-text label required? valid? visited?]
+        :or {required? false}
         :as props}]
     {:pre [(string? label)]}
     [:div
      [:label {:style {:color (when (and (not valid?)
                                         visited?
-                                        error-text
-                                        show-validation?)
+                                        error-text)
                                "#a94442")}}
       (str (when required? "* ") label)]
      [hoc-component props]]))
@@ -39,16 +37,13 @@
 
 
 (defn validation-markup [hoc-component]
-  (fn [{:keys [valid? error-text show-validation? visited?] :as props}]
+  (fn [{:keys [error-text valid? visited?] :as props}]
     [:div {:class (str "form-group has-feedback"
-                       (when (and show-validation?
-                                  visited?)
+                       (when visited?
                          (if valid?
                            " has-success"
                            " has-error")))}
      [hoc-component props]
-     (when (and show-validation?
-                visited?
-                (not valid?))
+     (when (and (not valid?) visited?)
        [:p {:style {:color (when-not valid? "#a94442")}}
         error-text])]))

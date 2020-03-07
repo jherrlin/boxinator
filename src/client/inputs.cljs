@@ -6,7 +6,7 @@
    [clojure.test.check.generators :as gen]))
 
 
-(defn text [{:keys [id value placeholder on-change on-focus on-blur]
+(defn text [{:keys [id value placeholder on-change on-focus on-blur attr]
              :or {placeholder ""
                   on-change #(js/console.log "text: "  (.. % -target -value))
                   on-focus (fn [] (js/console.log "on-focus"))
@@ -14,14 +14,15 @@
              :as props}]
   {:pre [(string? id)]}
   [:input.form-control
-   {:id id
-    :autocomplete "off"
-    :on-change #(on-change (.. % -target -value))
-    :on-focus on-focus
-    :on-blur on-blur
-    :type "text"
-    :placeholder placeholder
-    :value (or value "")}])
+   (merge
+    {:id id
+     :on-change #(on-change (.. % -target -value))
+     :on-focus on-focus
+     :on-blur on-blur
+     :type "text"
+     :placeholder placeholder
+     :value (or value "")}
+    attr)])
 
 
 (defn number [{:keys [id value placeholder on-change on-focus on-blur]

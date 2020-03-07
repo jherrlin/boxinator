@@ -17,14 +17,11 @@
 
 (def events-
   [{:n ::name}
-   {:n ::name-visited?}
-   {:n :countries}
    {:n ::country}
-   {:n ::country-visited?}
    {:n ::weight}
-   {:n ::weight-visited?}
    {:n ::rgb}
-   {:n ::rgb-visited?}])
+
+   {:n :countries}])
 
 
 (doseq [{:keys [n s e]} events-]
