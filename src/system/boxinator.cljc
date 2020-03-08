@@ -14,7 +14,7 @@
 (s/def ::g pos-int?)
 (s/def ::r pos-int?)
 (s/def :box/color (s/keys :req-un [::g ::r]))
-(s/def :box/country #{"Austalia" "Brazil" "China" "Sweden"})
+(s/def :box/country ::uuid)
 (s/def :box/id ::uuid)
 (s/def :box/name string?)
 (s/def :box/weight pos-int?)
