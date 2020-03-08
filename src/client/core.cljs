@@ -3,6 +3,7 @@
   (:require
    [client.events :as events]
    [client.forms :as forms]
+   [client.color-picker :as color-picker]
    [clojure.spec.alpha :as s]
    [medley.core :as medley]
    [re-com.core :as re-com]
@@ -90,7 +91,8 @@
       #(rf/dispatch [::events/form-value form :box/id (medley/random-uuid)])
       :reagent-render
       (fn []
-        (let [save? @(rf/subscribe [::events/form-meta form :form/save?])]
+        (let [save?     @(rf/subscribe [::events/form-meta form :form/save?])
+              form-data @(rf/subscribe [::events/form form])]
           [:div {:style {:min-width "300px"}}
            [view-a-name {:save? save? :form form}]
            [view-a-weight {:save? save? :form form}]
@@ -100,8 +102,34 @@
             {:style {:display "flex" :justify-content "flex-end"}}
             [:button.btn.btn-default
              {:on-click
-              #(rf/dispatch [::events/form-meta form :form/save? true])}
-             "Save"]]]))})))
+              #(do (rf/dispatch [::events/form-meta form :form/save? true])
+                   (when (and save?
+                              (s/valid? form form-data))
+                     (rf/dispatch [::events/save-form form])))}
+             (if (and save?
+                      (s/valid? form form-data))
+               "Save" "Validate")]]]))})))
+
+
+(defn table []
+  (let [boxes @(rf/subscribe [:res])
+        countries @(rf/subscribe [:countries])]
+    [:table.table {:style {:width "100%"}}
+     [:thead
+      [:tr
+       [:th "Receiver"]
+       [:th "Weight"]
+       [:th "Box color"]
+       [:th "Shipping cost"]]]
+     [:tbody
+      (for [{:box/keys [id name color country weight] :as box} boxes]
+        ^{:key id}
+        [:tr
+         [:td name]
+         [:td (str weight " kilograms")]
+         (let [{:color/keys [r g]} color]
+           [:td {:style {:background-color (color-picker/rgb-str r g)}}])
+         [:td (* weight (get-in countries [country :country/multiplier]))]])]]))
 
 
 (defn app-init []
@@ -110,6 +138,7 @@
    :width "100%"
    :class "container"
    :children [[view-a]
+              [table]
               [:div {:style {:width "100%" :display "flex" :justify-content "flex-end"}}
                [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db))]]]])
 

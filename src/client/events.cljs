@@ -29,6 +29,22 @@
   (re-frame/reg-sub n (or s (fn [db _] (n db))))
   (re-frame/reg-event-db n (or e (fn [db [_ e]] (assoc db n e)))))
 
+(re-frame/reg-sub
+ :res
+ (fn [db [k]]
+   (get-in db [:res])))
+
+
+(re-frame/reg-sub
+ ::form
+ (fn [db [k form]]
+   (get-in db [:form form :values])))
+
+(re-frame/reg-event-db
+ ::form
+ (fn [db [_ form value]]
+   (assoc-in db [:form form] value)))
+
 (re-frame/reg-event-db
  ::form-value
  (fn [db [_ form attr value]]
@@ -53,6 +69,38 @@
  ::success-post-result
  (fn [db [_ res]]
    (assoc db :spinner? false :res res)))
+
+
+(re-frame/reg-event-db
+ ::save-form-success
+ (fn [db [_ form results]]
+   (-> db
+       (assoc-in [:form form] {})
+       (assoc    :res results))))
+
+
+(re-frame/reg-event-db
+ ::save-form-failure
+ (fn [db [_ form results]]
+   (-> db
+       (assoc-in [:form form :meta :waiting?] false)
+       (assoc    :res results))))
+
+
+(re-frame/reg-event-fx
+ ::save-form
+ (fn [{:keys [db]} [k form]]
+   (let [form-data (get-in db [:form form :values])]
+     {:db (assoc-in db [:form form :meta :waiting?] true)
+      :http-xhrio {:method          :post
+                   :uri             "http://localhost:8080/boxes"
+                   :params          form-data
+                   :timeout         5000
+                   :format          (ajax.edn/edn-request-format)
+                   :response-format (ajax.edn/edn-response-format)
+                   :on-success      [::save-form-success form]
+                   :on-failure      [::save-form-failure form]}})))
+
 
 (re-frame/reg-event-fx
  ::save
@@ -96,7 +144,7 @@
  (fn [{:keys [db] :as cofx} [k]]
    {:interval {:action    :start
                :id        :get-query
-               :frequency 60000
+               :frequency 20000
                :event     [::get]}}))
 
 
@@ -106,6 +154,10 @@
    {:interval {:action    :stop
                :id        :get-query}}))
 
+
+(do
+  (re-frame/dispatch [::get])
+  (re-frame/dispatch [:start-poll]))
 
 (comment
   (do

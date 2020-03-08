@@ -29,7 +29,7 @@
                        (try
                          (do
                            (db/save-box body-params)
-                           (send-edn response/response :ok))
+                           (send-edn response/response (db/get-boxes)))
                          (catch Exception e
                            (send-edn response/bad-request :fail)))))
   (GET "/boxes" req (fn [req]

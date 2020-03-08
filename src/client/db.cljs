@@ -21,5 +21,4 @@
 
 
 (def app-db
-  {:color nil
-   :countries countries})
+  {:countries countries})
