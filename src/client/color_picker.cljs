@@ -1,6 +1,5 @@
 (ns client.color-picker
   (:require
-   [re-frame.core :as re-frame]
    [clojure.string :as str]))
 
 
@@ -16,7 +15,9 @@
 (defn pixel [on-color-click r g]
   [:div {:style {:width "5px" :height "5px"
                  :background-color (rgb-str r g)}
-         :on-click #(on-color-click {:r r :g g})}])
+         :on-click #(on-color-click {:color/r r
+                                     :color/g g
+                                     :color/b 0})}])
 
 
 (defn pallet [on-color-click]
@@ -28,7 +29,7 @@
        [pixel on-color-click r g]))])
 
 
-(defn selected-color [{:keys [r g]}]
+(defn selected-color [{:color/keys [r g]}]
   [:div
    {:style {:width "30px"
             :height "30px"

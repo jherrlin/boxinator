@@ -1,32 +1,13 @@
 (ns client.core
   (:refer-clojure :exclude [name])
   (:require
-   [client.color-picker :as color-picker]
    [client.events :as events]
    [client.forms :as forms]
-   [client.inputs :as inputs]
    [clojure.spec.alpha :as s]
-   [clojure.string :as str]
-   [clojure.test.check.generators :as gen]
    [medley.core :as medley]
    [re-com.core :as re-com]
    [re-frame.core :as rf]
-   [reagent.core :as reagent]
-   [taoensso.sente :as sente]))
-
-
-(comment
-  [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db))]
-
-  (->> @re-frame.db/app-db
-       :form
-       :boxinator/box
-       :values
-       (s/valid? :boxinator/box)
-       )
-  )
-
-
+   [reagent.core :as reagent]))
 
 
 (defn view-a-name [{:keys [save? form]}]
@@ -65,7 +46,7 @@
 
 (defn view-a-box-colour [{:keys [save? form]}]
   (let [attr :box/color
-        {:keys [r g] :as color} @(rf/subscribe [::events/form-value form attr])
+        {:color/keys [r g] :as color} @(rf/subscribe [::events/form-value form attr])
         show-picker? @(rf/subscribe [::events/form-meta form :color-picker/show?])]
     [forms/color-picker
      {:label          "Box colour"

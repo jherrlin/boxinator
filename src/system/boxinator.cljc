@@ -11,9 +11,9 @@
 (s/def ::uuid (s/with-gen medley/uuid? (fn [] gen/uuid)))
 
 
-(s/def ::g pos-int?)
-(s/def ::r pos-int?)
-(s/def :box/color (s/keys :req-un [::g ::r]))
+(s/def :color/g pos-int?)
+(s/def :color/r pos-int?)
+(s/def :box/color (s/keys :req [:color/g :color/r]))
 (s/def :box/country ::uuid)
 (s/def :box/id ::uuid)
 (s/def :box/name string?)
