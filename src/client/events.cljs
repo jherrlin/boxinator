@@ -21,6 +21,7 @@
    {:n ::weight}
    {:n ::rgb}
 
+   {:n :form/save?}
    {:n :countries}])
 
 
@@ -28,18 +29,30 @@
   (re-frame/reg-sub n (or s (fn [db _] (n db))))
   (re-frame/reg-event-db n (or e (fn [db [_ e]] (assoc db n e)))))
 
+(re-frame/reg-event-db
+ ::form-value
+ (fn [db [_ form attr value]]
+   (assoc-in db [:form form :values attr] value)))
+
+(re-frame/reg-sub
+ ::form-value
+ (fn [db [k form attr]]
+   (get-in db [:form form :values attr])))
+
+(re-frame/reg-event-db
+ ::form-meta
+ (fn [db [_ form attr meta]]
+   (assoc-in db [:form form :meta attr] meta)))
+
+(re-frame/reg-sub
+ ::form-meta
+ (fn [db [k form attr]]
+   (get-in db [:form form :meta attr])))
 
 (re-frame/reg-event-db
  ::success-post-result
  (fn [db [_ res]]
    (assoc db :spinner? false :res res)))
-
-
-(re-frame/reg-event-db
- ::failure-post-result
- (fn [db [_ res]]
-   (assoc db :spinner? false :http-error :true)))
-
 
 (re-frame/reg-event-fx
  ::save
@@ -53,7 +66,6 @@
                  :response-format (ajax.edn/edn-response-format)
                  :on-success      [::success-post-result]
                  :on-failure      [::http-failure]}}))
-
 
 (re-frame/reg-fx
  :interval
@@ -84,7 +96,7 @@
  (fn [{:keys [db] :as cofx} [k]]
    {:interval {:action    :start
                :id        :get-query
-               :frequency 5000
+               :frequency 60000
                :event     [::get]}}))
 
 
@@ -93,11 +105,6 @@
  (fn [{:keys [db] :as cofx} [k]]
    {:interval {:action    :stop
                :id        :get-query}}))
-
-
-
-
-
 
 
 (comment
