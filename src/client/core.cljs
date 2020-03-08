@@ -114,22 +114,30 @@
 (defn table []
   (let [boxes @(rf/subscribe [:res])
         countries @(rf/subscribe [:countries])]
-    [:table.table {:style {:width "100%"}}
-     [:thead
-      [:tr
-       [:th "Receiver"]
-       [:th "Weight"]
-       [:th "Box color"]
-       [:th "Shipping cost"]]]
-     [:tbody
-      (for [{:box/keys [id name color country weight] :as box} boxes]
-        ^{:key id}
-        [:tr
-         [:td name]
-         [:td (str weight " kilograms")]
-         (let [{:color/keys [r g]} color]
-           [:td {:style {:background-color (color-picker/rgb-str r g)}}])
-         [:td (* weight (get-in countries [country :country/multiplier]))]])]]))
+    [:div {:style {:width "100%"}}
+     [:table.table {:style {:width "100%"}}
+      [:thead
+       [:tr
+        [:th "Receiver"]
+        [:th "Weight"]
+        [:th "Box color"]
+        [:th "Shipping cost"]]]
+      [:tbody
+       (for [{:box/keys [id name color country weight] :as box} boxes]
+         ^{:key id}
+         [:tr
+          [:td name]
+          [:td (str weight " kilograms")]
+          (let [{:color/keys [r g]} color]
+            [:td {:style {:background-color (color-picker/rgb-str r g)}}])
+          [:td (* weight (get-in countries [country :country/multiplier]))]])]]
+     [:div
+      "Total weight:" (reduce (fn [i {:box/keys [weight]}]
+                                (+ i weight)) 0 boxes)]
+     [:div
+      "Total cost:" (reduce (fn [i {:box/keys [weight country]}]
+                              (+ i
+                                 (* weight (get-in countries [country :country/multiplier])))) 0 boxes)]]))
 
 
 (defn app-init []
