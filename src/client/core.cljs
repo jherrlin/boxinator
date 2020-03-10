@@ -85,31 +85,25 @@
 
 
 (defn view-a []
-  (let [form :boxinator/box]
-    (reagent/create-class
-     {:display-name "focus-when-empty"
-      :component-did-mount
-      #(rf/dispatch [::events/form-value form :box/id (medley/random-uuid)])
-      :reagent-render
-      (fn []
-        (let [save?     @(rf/subscribe [::events/form-meta form :form/save?])
-              form-data @(rf/subscribe [::events/form form])]
-          [:div {:style {:min-width "300px"}}
-           [view-a-name {:save? save? :form form}]
-           [view-a-weight {:save? save? :form form}]
-           [view-a-box-colour {:save? save? :form form}]
-           [view-a-countries {:save? save? :form form}]
-           [:div
-            {:style {:display "flex" :justify-content "flex-end"}}
-            [:button.btn.btn-default
-             {:on-click
-              #(do (rf/dispatch [::events/form-meta form :form/save? true])
-                   (when (and save?
-                              (s/valid? form form-data))
-                     (rf/dispatch [::events/save-form form])))}
-             (if (and save?
-                      (s/valid? form form-data))
-               "Save" "Validate")]]]))})))
+  (let [form      :boxinator/box
+        save?     @(rf/subscribe [::events/form-meta form :form/save?])
+        form-data @(rf/subscribe [::events/form form])]
+    [:div {:style {:min-width "300px"}}
+     [view-a-name {:save? save? :form form}]
+     [view-a-weight {:save? save? :form form}]
+     [view-a-box-colour {:save? save? :form form}]
+     [view-a-countries {:save? save? :form form}]
+     [:div
+      {:style {:display "flex" :justify-content "flex-end"}}
+      [:button.btn.btn-default
+       {:on-click
+        #(do (rf/dispatch [::events/form-meta form :form/save? true])
+             (when (and save?
+                        (s/valid? form form-data))
+               (rf/dispatch [::events/save-form form])))}
+       (if (and save?
+                (s/valid? form form-data))
+         "Save" "Validate")]]]))
 
 
 (defn table []
@@ -133,10 +127,10 @@
             [:td {:style {:background-color (color-picker/rgb-str r g)}}])
           [:td (* weight (get-in countries [country :country/multiplier]))]])]]
      [:div
-      "Total weight:" (reduce (fn [i {:box/keys [weight]}]
+      "Total weight: " (reduce (fn [i {:box/keys [weight]}]
                                 (+ i weight)) 0 boxes)]
      [:div
-      "Total cost:" (reduce (fn [i {:box/keys [weight country]}]
+      "Total cost: " (reduce (fn [i {:box/keys [weight country]}]
                               (+ i
                                  (* weight (get-in countries [country :country/multiplier])))) 0 boxes)]]))
 

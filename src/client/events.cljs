@@ -121,8 +121,6 @@
  :interval
  (let [live-intervals (atom {})]
    (fn [{:keys [action id frequency event] :as m}]
-     (println "in here")
-     (js/console.log "john-debug: YO!" m)
      (if (= action :start)
        (swap! live-intervals assoc id (js/setInterval #(re-frame/dispatch event) frequency))
        (do (js/clearInterval (get @live-intervals id))
@@ -160,7 +158,9 @@
 (re-frame/reg-event-fx
  :route/addbox
  (fn [{:keys [db] :as cofx} [k]]
-   {:db       (assoc db :active-panel :form)
+   {:db       (-> db
+                  (assoc :active-panel :form)
+                  (assoc-in [:form :boxinator/box :box/id] (medley/random-uuid)))
     :interval {:action :stop
                :id     :get-query}}))
 
@@ -168,11 +168,17 @@
 (re-frame/reg-event-fx
  :route/listboxes
  (fn [{:keys [db] :as cofx} [k]]
-   {:db       (assoc db :active-panel :table)
-    :interval {:action    :start
-               :id        :get-query
-               :frequency 20000
-               :event     [::get]}}))
+   {:db         (assoc db :active-panel :table)
+    :http-xhrio {:method          :get
+                 :uri             "http://localhost:8080/boxes"
+                 :timeout         5000
+                 :response-format (ajax.edn/edn-response-format)
+                 :on-success      [::success-post-result]
+                 :on-failure      [::http-failure]}
+    :interval   {:action    :start
+                 :id        :get-query
+                 :frequency 20000
+                 :event     [::get]}}))
 
 
 (comment
