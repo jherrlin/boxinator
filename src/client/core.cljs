@@ -6,13 +6,12 @@
    [client.routes :as routes]
    [client.color-picker :as color-picker]
    [clojure.spec.alpha :as s]
-   [medley.core :as medley]
    [re-com.core :as re-com]
    [re-frame.core :as rf]
    [reagent.core :as reagent]))
 
 
-(defn view-a-name [{:keys [save? form]}]
+(defn view-a-name [{:keys [form save?]}]
   (let [attr  :box/name
         value @(rf/subscribe [::events/form-value form attr])]
     [forms/text
@@ -28,7 +27,7 @@
       :error-text  "A name needs to be provided."}]))
 
 
-(defn view-a-weight [{:keys [save? form]}]
+(defn view-a-weight [{:keys [form save?]}]
   (let [attr   :box/weight
         weight @(rf/subscribe [::events/form-value form attr])]
     [forms/number
@@ -46,9 +45,9 @@
       :error-text  "Needs to be a positive number."}]))
 
 
-(defn view-a-box-colour [{:keys [save? form]}]
+(defn view-a-box-colour [{:keys [form save?]}]
   (let [attr :box/color
-        {:color/keys [r g] :as color} @(rf/subscribe [::events/form-value form attr])
+        {:color/keys [g r] :as color} @(rf/subscribe [::events/form-value form attr])
         show-picker? @(rf/subscribe [::events/form-meta form :color-picker/show?])]
     [forms/color-picker
      {:label          "Box colour"
@@ -107,7 +106,7 @@
 
 
 (defn table []
-  (let [boxes @(rf/subscribe [:res])
+  (let [boxes     @(rf/subscribe [:res])
         countries @(rf/subscribe [:countries])]
     [:div {:style {:width "100%"}}
      [:table.table {:style {:width "100%"}}
@@ -118,7 +117,7 @@
         [:th "Box color"]
         [:th "Shipping cost"]]]
       [:tbody
-       (for [{:box/keys [id name color country weight] :as box} boxes]
+       (for [{:box/keys [color country id name weight] :as box} boxes]
          ^{:key id}
          [:tr
           [:td name]
@@ -130,7 +129,7 @@
       "Total weight: " (reduce (fn [i {:box/keys [weight]}]
                                 (+ i weight)) 0 boxes)]
      [:div
-      "Total cost: " (reduce (fn [i {:box/keys [weight country]}]
+      "Total cost: " (reduce (fn [i {:box/keys [country weight]}]
                               (+ i
                                  (* weight (get-in countries [country :country/multiplier])))) 0 boxes)]]))
 

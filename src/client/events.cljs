@@ -30,6 +30,7 @@
   (re-frame/reg-sub n (or s (fn [db _] (n db))))
   (re-frame/reg-event-db n (or e (fn [db [_ e]] (assoc db n e)))))
 
+
 (re-frame/reg-sub
  :res
  (fn [db [k]]
@@ -41,30 +42,36 @@
  (fn [db [k form]]
    (get-in db [:form form :values])))
 
+
 (re-frame/reg-event-db
  ::form
  (fn [db [_ form value]]
    (assoc-in db [:form form] value)))
+
 
 (re-frame/reg-event-db
  ::form-value
  (fn [db [_ form attr value]]
    (assoc-in db [:form form :values attr] value)))
 
+
 (re-frame/reg-sub
  ::form-value
  (fn [db [k form attr]]
    (get-in db [:form form :values attr])))
+
 
 (re-frame/reg-event-db
  ::form-meta
  (fn [db [_ form attr meta]]
    (assoc-in db [:form form :meta attr] meta)))
 
+
 (re-frame/reg-sub
  ::form-meta
  (fn [db [k form attr]]
    (get-in db [:form form :meta attr])))
+
 
 (re-frame/reg-event-db
  ::success-post-result
