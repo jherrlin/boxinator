@@ -3,6 +3,7 @@
   (:require
    [client.events :as events]
    [client.forms :as forms]
+   [client.routes :as routes]
    [client.color-picker :as color-picker]
    [clojure.spec.alpha :as s]
    [medley.core :as medley]
@@ -140,23 +141,39 @@
                                  (* weight (get-in countries [country :country/multiplier])))) 0 boxes)]]))
 
 
-(defn app-init []
+(defn form []
   [re-com/h-box
    :height "100%"
    :width "100%"
    :class "container"
    :children [[view-a]
-              [table]
               [:div {:style {:width "100%" :display "flex" :justify-content "flex-end"}}
                [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db))]]]])
 
 
+(defn- panels [panel-name]
+  (case panel-name
+    :form [form]
+    :table [table]
+    [:div]))
+
+
+(defn show-panel [panel-name]
+  [panels panel-name])
+
+
+(defn main-panel []
+  (let [active-panel (rf/subscribe [:active-panel])]
+    [show-panel @active-panel]))
+
+
 (defn ^:dev/after-load mount-root []
   (rf/clear-subscription-cache!)
-  (reagent/render [app-init]
+  (reagent/render [main-panel]
                   (.getElementById js/document "app")))
 
 
 (defn init []
+  (routes/app-routes)
   (rf/dispatch-sync [::events/initialize-db])
   (mount-root))

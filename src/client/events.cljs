@@ -21,6 +21,7 @@
    {:n ::weight}
    {:n ::rgb}
 
+   {:n :active-panel}
    {:n :form/save?}
    {:n :countries}])
 
@@ -115,6 +116,7 @@
                  :on-success      [::success-post-result]
                  :on-failure      [::http-failure]}}))
 
+
 (re-frame/reg-fx
  :interval
  (let [live-intervals (atom {})]
@@ -155,9 +157,23 @@
                :id        :get-query}}))
 
 
-(do
-  (re-frame/dispatch [::get])
-  (re-frame/dispatch [:start-poll]))
+(re-frame/reg-event-fx
+ :route/addbox
+ (fn [{:keys [db] :as cofx} [k]]
+   {:db       (assoc db :active-panel :form)
+    :interval {:action :stop
+               :id     :get-query}}))
+
+
+(re-frame/reg-event-fx
+ :route/listboxes
+ (fn [{:keys [db] :as cofx} [k]]
+   {:db       (assoc db :active-panel :table)
+    :interval {:action    :start
+               :id        :get-query
+               :frequency 20000
+               :event     [::get]}}))
+
 
 (comment
   (do

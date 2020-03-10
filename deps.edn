@@ -21,6 +21,7 @@
         re-frame {:mvn/version "0.11.0"}
         reagent {:mvn/version "0.9.1"}
         reagent-utils {:mvn/version "0.3.3"}
+        secretary {:mvn/version "1.2.3"}
         re-com {:mvn/version "2.7.0"}
         cljs-ajax {:mvn/version "0.8.0"}
         fogus/ring-edn {:mvn/version "0.3.0"}
