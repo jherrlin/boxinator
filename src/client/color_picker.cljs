@@ -23,10 +23,10 @@
 (defn pallet [on-color-click]
   [:div {:style {:width "255px" :height "255px"
                  :display "flex" :flex-wrap "wrap"}}
-   (for [r (range 0 255 5)]
-     (for [g (range 0 255 5)]
-       ^{:key (str r g)}
-       [pixel on-color-click r g]))])
+   (for [r (range 0 255 5)
+         g (range 0 255 5)]
+     ^{:key (str r g)}
+     [pixel on-color-click r g])])
 
 
 (defn selected-color [{:color/keys [r g]}]
