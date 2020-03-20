@@ -10,7 +10,10 @@
 (s/def :color/g pos-int?)
 (s/def :color/r pos-int?)
 (s/def :box/color (s/keys :req [:color/g :color/r]))
-(s/def :box/country ::shared/uuid)
+(s/def :box/country #{#uuid "958e0376-eb26-428a-8147-7efc04e8d3e5"
+                      #uuid "837225a9-f74d-447e-87bc-49c0b58ec972"
+                      #uuid "b1ace9ef-c1fa-4c00-94fc-97db4618c245"
+                      #uuid "8b759afd-1e0e-40ef-aecb-a3e48db4056e"})
 (s/def :box/id ::shared/uuid)
 (s/def :box/name string?)
 (s/def :box/weight pos-int?)

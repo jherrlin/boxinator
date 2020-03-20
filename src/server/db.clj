@@ -73,6 +73,6 @@
 
 
 (comment
-  @(save-box (gen/generate (s/gen :boxinator/box)))
+  (save-box (gen/generate (s/gen :boxinator/box)))
   (get-boxes)
   )
