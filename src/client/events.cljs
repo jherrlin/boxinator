@@ -1,6 +1,5 @@
 (ns client.events
   (:require
-   [client.db :as db]
    [day8.re-frame.http-fx]
    [client.events.routes]
    [ajax.core :as ajax]
@@ -11,7 +10,7 @@
 (re-frame/reg-event-db
  ::initialize-db
  (fn [_ _]
-   db/app-db))
+   {}))
 
 
 (def events-
