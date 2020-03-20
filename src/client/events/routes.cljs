@@ -4,7 +4,6 @@
    [ajax.edn]
    [ajax.formats]
    [day8.re-frame.http-fx]
-   [medley.core :as medley]
    [re-frame.core :as re-frame]
    [system.shared :as shared]))
 

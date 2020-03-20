@@ -8,9 +8,10 @@
    [org.httpkit.server :as httpkit.server]
    [ring.middleware.defaults]
    [muuntaja.middleware :as middleware]
-   [ring.util.response :as response]
-   [taoensso.timbre :as timbre]))
+   [ring.util.response :as response]))
 
+
+(declare stop-server)
 
 (defn edn-response
   "Create HTTP response with edn body.
@@ -44,6 +45,10 @@
       (debug-middeware)
       (middleware/wrap-format)))
 
+(defn start-server [port]
+  (let [stop-server-fn (httpkit.server/run-server #'handler {:port port})]
+    (def stop-server stop-server-fn)))
+
 (defn -main [& [port]]
   (let [parse-port (fn [port]
                      (try
@@ -51,9 +56,11 @@
                        (catch Exception e port)))
         port (or (parse-port (:port config.core/env))
                  8080)]
-    (timbre/info "Server starting on port: " port)
-    (httpkit.server/run-server #'handler {:port port})))
+    (println "Server starting on port: " port)
+    (start-server port)))
 
 (comment
+  (start-server 8080)
+  (stop-server)
   (-main)
   )

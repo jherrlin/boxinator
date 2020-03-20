@@ -2,10 +2,10 @@
   (:require
    [day8.re-frame.http-fx]
    [client.events.routes]
-   [ajax.core :as ajax]
    [ajax.formats]
    [ajax.edn]
    [re-frame.core :as re-frame]))
+
 
 (re-frame/reg-event-db
  ::initialize-db
