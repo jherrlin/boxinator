@@ -5,7 +5,9 @@
    [clojure.edn :as edn]))
 
 
-(defn read-edn-file [resource-filesystem-path]
+(defn read-edn-file
+  "Read file from filesystem and parse it to edn."
+  [resource-filesystem-path]
   (try
     (edn/read-string (slurp (io/resource resource-filesystem-path)))
     (catch java.io.IOException e
@@ -14,8 +16,11 @@
       (printf "Error parsing edn file '%s': %s\n" resource-filesystem-path (.getMessage e)))))
 
 
-(defn index-html [req]
-  (html5 {:style "height: 100%"}
+(defn index-html
+  "Create an index page with a CSRF token attached to it."
+  [req]
+  (html5
+   {:style "height: 100%"}
    [:head
     [:meta {:charset "UTF-8"}]
     [:meta {:name "viewport" :content "width=device-width, initial-scale=1, shrink-to-fit=no"}]

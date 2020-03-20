@@ -1,14 +1,17 @@
 (ns client.core
   (:refer-clojure :exclude [name])
   (:require
+   [client.color-picker :as color-picker]
    [client.events :as events]
    [client.forms :as forms]
    [client.routes :as routes]
-   [client.color-picker :as color-picker]
    [clojure.spec.alpha :as s]
    [re-com.core :as re-com]
    [re-frame.core :as rf]
-   [reagent.core :as reagent]))
+   [reagent.core :as reagent]
+   [system.boxinator :as boxinator]
+   [system.country :as country]
+   [system.shared :as shared]))
 
 
 (defn view-a-name [{:keys [form save?]}]
@@ -69,14 +72,13 @@
 
 (defn view-a-countries [{:keys [save? form]}]
   (let [attr :box/country
-        countries @(rf/subscribe [:countries])
         value @(rf/subscribe [::events/form-value form attr])]
     [forms/select
      {:id          "view-a-countries"
       :label       "Country"
       :on-select   #(rf/dispatch [::events/form-value form attr (:country/id %)])
       :selected-id value
-      :choices     countries
+      :choices     country/countries
       :required?   true
       :valid?      (s/valid? :country/id value)
       :visited?    save?
@@ -106,8 +108,7 @@
 
 
 (defn table []
-  (let [boxes     @(rf/subscribe [:res])
-        countries @(rf/subscribe [:countries])]
+  (let [boxes @(rf/subscribe [:res])]
     [:div {:style {:width "100%"}}
      [:table.table {:style {:width "100%"}}
       [:thead
@@ -117,21 +118,18 @@
         [:th "Box color"]
         [:th "Shipping cost"]]]
       [:tbody
-       (for [{:box/keys [color country id name weight] :as box} boxes]
+       (for [{:box/keys [color country id name weight] :as box} (shared/denormalize boxes)]
          ^{:key id}
          [:tr
           [:td name]
           [:td (str weight " kilograms")]
           (let [{:color/keys [r g]} color]
             [:td {:style {:background-color (color-picker/rgb-str r g)}}])
-          [:td (* weight (get-in countries [country :country/multiplier]))]])]]
-     [:div
-      "Total weight: " (reduce (fn [i {:box/keys [weight]}]
-                                (+ i weight)) 0 boxes)]
-     [:div
-      "Total cost: " (reduce (fn [i {:box/keys [country weight]}]
-                              (+ i
-                                 (* weight (get-in countries [country :country/multiplier])))) 0 boxes)]]))
+          [:td (* weight (country/multiplier country))]])]]
+     [:div "Total weight: " (when boxes
+                              (boxinator/total-weight boxes))]
+     [:div "Total cost: " (when boxes
+                            (boxinator/total-cost boxes))]]))
 
 
 (defn form []
@@ -146,9 +144,17 @@
 
 (defn- panels [panel-name]
   (case panel-name
-    :form [form]
+    :form  [form]
     :table [table]
-    [:div]))
+    :main  [re-com/h-box
+            :height "100%"
+            :width "100%"
+            :class "container"
+            :children [[form]
+                       [table]
+                       [:div {:style {:width "100%" :display "flex" :justify-content "flex-end"}}
+                        [:pre (with-out-str (cljs.pprint/pprint @re-frame.db/app-db))]]]]
+    [:div "asd"]))
 
 
 (defn show-panel [panel-name]

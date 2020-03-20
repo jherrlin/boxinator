@@ -16,7 +16,6 @@
       (str (when required? "* ") label)]
      [hoc-component props]]))
 
-
 (defn focus-when-empty [hoc-component]
   (fn [{:keys [value id focus?]
         :or {focus? false}
@@ -34,7 +33,6 @@
       :reagent-render
       (fn [props]
         [hoc-component props])})))
-
 
 (defn validation-markup [hoc-component]
   (fn [{:keys [error-text valid? visited?] :as props}]

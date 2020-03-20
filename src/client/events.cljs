@@ -22,8 +22,7 @@
    {:n ::rgb}
 
    {:n :active-panel}
-   {:n :form/save?}
-   {:n :countries}])
+   {:n :form/save?}])
 
 
 (doseq [{:keys [n s e]} events-]
@@ -176,6 +175,22 @@
  :route/listboxes
  (fn [{:keys [db] :as cofx} [k]]
    {:db         (assoc db :active-panel :table)
+    :http-xhrio {:method          :get
+                 :uri             "http://localhost:8080/boxes"
+                 :timeout         5000
+                 :response-format (ajax.edn/edn-response-format)
+                 :on-success      [::success-post-result]
+                 :on-failure      [::http-failure]}
+    :interval   {:action    :start
+                 :id        :get-query
+                 :frequency 20000
+                 :event     [::get]}}))
+
+
+(re-frame/reg-event-fx
+ :route/main
+ (fn [{:keys [db] :as cofx} [k]]
+   {:db         (assoc db :active-panel :main)
     :http-xhrio {:method          :get
                  :uri             "http://localhost:8080/boxes"
                  :timeout         5000

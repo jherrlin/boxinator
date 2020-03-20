@@ -16,7 +16,6 @@
        (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
-
 (defn app-routes []
   (secretary/set-config! :prefix "#")
   (defroute "/addbox" []
@@ -25,5 +24,7 @@
   (defroute "/listboxes" []
     (re-frame/dispatch [:route/listboxes]))
 
-  ;; --------------------
+  (defroute "/" []
+    (re-frame/dispatch [:route/main]))
+
   (hook-browser-navigation!))

@@ -23,7 +23,6 @@
      :value (or value "")}
     attr)])
 
-
 (defn number [{:keys [attr id on-blur on-change on-focus placeholder value]
                :or {placeholder ""
                     on-change #(js/console.log "numer: "  (.. % -target -value))
@@ -41,7 +40,6 @@
      :placeholder placeholder
      :value value}
     attr)])
-
 
 (defn select [{:keys [attr choices id on-focus on-select selected-id]
                :or {on-select #(js/console.log "no `on-select` fn. But selected:" %)

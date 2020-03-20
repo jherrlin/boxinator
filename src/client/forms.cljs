@@ -1,4 +1,7 @@
 (ns client.forms
+  "This namespace contains HOCs/components that are composed into form inputs. A form input
+  as a component that is more sophisticated than a plain input. An example is `text`, it
+  contains a label and a validation text if the input is not valid."
   (:require
    [client.inputs :as inputs]
    [client.color-picker :as color-picker]
