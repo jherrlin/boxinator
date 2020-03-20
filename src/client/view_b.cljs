@@ -13,7 +13,7 @@
 
 
 (defn table []
-  (let [boxes @(rf/subscribe [:res])]
+  (let [boxes @(rf/subscribe [:boxes])]
     [:div {:style {:width "100%"}}
      [:table.table {:style {:width "100%"}}
       [:thead
