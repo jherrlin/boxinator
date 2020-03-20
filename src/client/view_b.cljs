@@ -30,7 +30,8 @@
           [:td (str weight " kilograms")]
           (let [{:color/keys [r g]} color]
             [:td {:style {:background-color (color-picker/rgb-str r g)}}])
-          [:td (* weight (country/multiplier country))]])]]
+          [:td (str (shared/round-floor-to-2-deciamls
+                     (* weight (country/multiplier country))) " Sek")]])]]
      [:div "Total weight: " (when boxes
                               (-> boxes
                                   (shared/denormalize)
@@ -38,4 +39,5 @@
      [:div "Total cost: " (when boxes
                             (-> boxes
                                 (shared/denormalize)
-                                (boxinator/total-cost)))]]))
+                                (boxinator/total-cost)
+                                (shared/round-floor-to-2-deciamls)))]]))

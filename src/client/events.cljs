@@ -64,12 +64,11 @@
  ::save-form
  (fn [{:keys [db]} [k form]]
    (let [form-data (get-in db [:form form :values])]
-     {:db (assoc-in db [:form form :meta :waiting?] true)
-      :http-xhrio {:method          :post
+     {:http-xhrio {:method          :post
                    :uri             "http://localhost:8080/boxes"
                    :params          form-data
                    :timeout         5000
                    :format          (ajax.edn/edn-request-format)
                    :response-format (ajax.edn/edn-response-format)
-                   :on-success      [:request/success]
+                   :on-success      [:request/form-success form]
                    :on-failure      [:request/failed]}})))

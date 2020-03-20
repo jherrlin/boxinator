@@ -15,6 +15,14 @@
 
 
 (re-frame/reg-event-db
+ :request/form-success
+ (fn [db [_ form results-from-server]]
+   (-> db
+       (assoc :boxes results-from-server)
+       (assoc-in [:form form] {}))))
+
+
+(re-frame/reg-event-db
  :request/failed
  (fn [db [_]]
    (assoc db :boxes {})))

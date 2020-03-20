@@ -25,3 +25,9 @@
 
 (t/deftest test-id?
   (t/is (sut/id? #uuid "b856fc6d-4fc9-419a-9f0f-ea0cdb48fea0")))
+
+(t/deftest test-round-floor-to-2-deciamls
+  (t/are [args-vector expected]
+      (= (apply sut/round-floor-to-2-deciamls args-vector) expected)
+    [51.599999999999994] "51.60"
+    [51] "51.00"))

@@ -1,7 +1,10 @@
 (ns system.shared
   "This namespace contains functions and specs that are used by other shared resources. This
   namespace should not contain any dependencies to other namespaces in the project."
+  (:refer-clojure :exclude [format])
   (:require
+   #?(:cljs [goog.string :as gstring])
+   #?(:cljs [goog.string.format])
    [clojure.spec.alpha :as s]
    [clojure.string :as str]
    [clojure.test.check.generators :as gen]
@@ -41,3 +44,15 @@
   "If `x` is a valid id, return true. Else nil."
   [x]
   (medley/uuid? x))
+
+(defn format
+  "General `format` for both clj and cljs."
+  [exp s]
+  #?(:clj  (clojure.core/format exp s)
+     :cljs (gstring/format      exp s)))
+
+(defn round-floor-to-2-deciamls
+  "Format a number down to 2 decimals."
+  [f]
+  (->> (double f)
+       (format "%.2f")))

@@ -33,16 +33,8 @@
                       (edn-response (db/get-boxes))))
   (resources "/"))
 
-(defn debug-middeware
-  "Debug middleware"
-  [handler]
-  (fn [request]
-    (clojure.pprint/pprint request)
-    (handler request)))
-
 (def handler
   (-> #'routes
-      (debug-middeware)
       (middleware/wrap-format)))
 
 (defn start-server [port]

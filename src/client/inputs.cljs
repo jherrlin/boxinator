@@ -8,8 +8,8 @@
 (defn text [{:keys [attr id on-blur on-change on-focus placeholder value]
              :or {placeholder ""
                   on-change #(js/console.log "text: "  (.. % -target -value))
-                  on-focus (fn [] (js/console.log "on-focus"))
-                  on-blur (fn [] (js/console.log "on-blur"))}
+                  on-focus (fn [])
+                  on-blur (fn [])}
              :as props}]
   {:pre [(string? id)]}
   [:input.form-control
@@ -26,8 +26,8 @@
 (defn number [{:keys [attr id on-blur on-change on-focus placeholder value]
                :or {placeholder ""
                     on-change #(js/console.log "numer: "  (.. % -target -value))
-                    on-focus (fn [] (js/console.log "on-focus"))
-                    on-blur (fn [] (js/console.log "on-blur"))}
+                    on-focus (fn [])
+                    on-blur (fn [])}
                :as props}]
   {:pre [(string? id)]}
   [:input.form-control
@@ -43,7 +43,7 @@
 
 (defn select [{:keys [attr choices id on-focus on-select selected-id]
                :or {on-select #(js/console.log "no `on-select` fn. But selected:" %)
-                    on-focus (fn [] (js/console.log "on-focus"))}
+                    on-focus (fn [])}
                :as props}]
   {:pre [(s/valid? :boxinator/countries choices)
          (string? id)]}
