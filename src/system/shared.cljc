@@ -31,3 +31,13 @@
          (map (fn [{id k :as x}]
                 {id x}))
          (into {}))))
+
+(defn id
+  "Generate id"
+  []
+  (medley/random-uuid))
+
+(defn id?
+  "If `x` is a valid id, return true. Else nil."
+  [x]
+  (medley/uuid? x))

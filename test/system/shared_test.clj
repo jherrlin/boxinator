@@ -19,3 +19,9 @@
 
 (t/deftest test-denormalize
   (t/is (common-test/test-check `sut/denormalize)))
+
+(t/deftest test-id
+  (t/is (uuid? (sut/id))))
+
+(t/deftest test-id?
+  (t/is (sut/id? #uuid "b856fc6d-4fc9-419a-9f0f-ea0cdb48fea0")))

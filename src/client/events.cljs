@@ -4,6 +4,7 @@
    [day8.re-frame.http-fx]
    [ajax.core :as ajax]
    [clojure.edn :as edn]
+   [system.shared :as shared]
    [ajax.formats]
    [ajax.edn]
    [medley.core :as medley]
@@ -166,7 +167,7 @@
  (fn [{:keys [db] :as cofx} [k]]
    {:db       (-> db
                   (assoc :active-panel :form)
-                  (assoc-in [:form :boxinator/box :box/id] (medley/random-uuid)))
+                  (assoc-in [:form :boxinator/box :values :box/id] (shared/id)))
     :interval {:action :stop
                :id     :get-query}}))
 
@@ -190,7 +191,9 @@
 (re-frame/reg-event-fx
  :route/main
  (fn [{:keys [db] :as cofx} [k]]
-   {:db         (assoc db :active-panel :main)
+   {:db         (-> db
+                    (assoc :active-panel :main)
+                    (assoc-in [:form :boxinator/box :values :box/id] (shared/id)))
     :http-xhrio {:method          :get
                  :uri             "http://localhost:8080/boxes"
                  :timeout         5000
