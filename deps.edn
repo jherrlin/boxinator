@@ -11,7 +11,7 @@
         medley {:mvn/version "1.2.0"}
         clj-time {:mvn/version "0.15.2"}
         hiccup {:mvn/version "1.0.5"}
-        com.datomic/datomic-free {:mvn/version "0.9.5703.21"}
+        com.datomic/datomic-free {:mvn/version "0.9.5697"}
         metosin/muuntaja {:mvn/version "0.6.6"}
 
         re-frame {:mvn/version "0.11.0"}
