@@ -65,7 +65,7 @@
  (fn [{:keys [db]} [k form]]
    (let [form-data (get-in db [:form form :values])]
      {:http-xhrio {:method          :post
-                   :uri             "http://localhost:8080/boxes"
+                   :uri             "http://localhost:8080/box"
                    :params          form-data
                    :timeout         5000
                    :format          (ajax.edn/edn-request-format)

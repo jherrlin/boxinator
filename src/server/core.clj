@@ -26,9 +26,9 @@
 
 (defroutes routes
   (GET "/" req (pages/index-html req))
-  (POST "/boxes" req (fn [{:keys [body-params] :as req}]
-                       (db/save-box body-params)
-                       (edn-response (db/get-boxes))))
+  (POST "/box" req (fn [{:keys [body-params] :as req}]
+                     (db/save-box body-params)
+                     (edn-response (db/get-boxes))))
   (GET "/boxes" req (fn [req]
                       (edn-response (db/get-boxes))))
   (resources "/"))
