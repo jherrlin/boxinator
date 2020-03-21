@@ -1,3 +1,215 @@
+#+AUTHOR: John Herrlin
+#+TITLE: Boxinator in clj/cljc/cljs
+#+EMAIL: jherrlin [@] gmail [dot] com
+
+* Boxinator overview
+
+  This is an application written in Clojure/ClojureScript.
+
+  In the "src" directory this 3 directories lives. Each of them have a specific purpose
+  and here is a short description of them and the things they do.
+
+** Client
+
+   The client is running reagent/re-frame. Reagent is a small wrapper around React and
+   re-frame is a library to use "single datastore". re-frame have events that mutates data
+   and subscribers that listens to data/changes in re-frames "app-db" datastructure.
+
+*** Routes
+
+    The app have support for URL routes. When a route is visited a set of events are
+    dispatched.
+
+*** Form and layers
+
+    "View A" is a form and is designed in different layers to provide indirection. The
+    layers are:
+
+    - =client/inputs.cljs=
+
+      This is the lowest level of the form layers. It knows detail on how to work with the
+      input. This is "raw" React and HTML. None of them have any state and they get all
+      their data through props. In this level of detail we think about stuff like "Should
+      we be able to react on onFocus?" or "Should there be a default placeholder for the
+      input?"
+
+    - =client/hocs.cljs=
+
+      On the same layer level is the HOCs. The HOCs are composable higher order
+      components. Each of this components takes another component as an argument and
+      returns a new component. The HOCs are general components that could be used in many
+      different places. For example the "label" HOC can be used on a text input to provide
+      a label.
+
+    - =client/input_forms.cljs=
+
+      One level above =inputs.cljs= and =hocs.cljs= is the input-forms. input-forms are
+      inputs and HOCS that are composed. For example the "text" component in input-forms
+      is a HTML text input with a label on top, have colored markdown depending on how it
+      validates and have the ability to auto focus. The text input-form is a pure
+      component that only works with props. On this level of abstraction we think about
+      stuff like: "Should the label in this text input form be able to have a '*' if the
+      field is required?" or "Does this text input form need color markdown to show
+      validation errors?".
+
+    - =client/view-a.cljs=
+
+      This is the top levels of the form abstraction. Here we declare what data each
+      component works with. Each component in the form only subscribes on the app-db path
+      that it needs. This to minimize the render cost. The highest level of the form
+      abstraction is the "form" component that lives in =client/view-a.cljs=. This level
+      only know about form and not about detail in its child components. It knows stuff
+      such as where the formdata lives, if the save/validate button have been pressed. In
+      this level of detail we think about stuff like: "What should happen if the form is
+      not valid?" or "What happends when we press the 'Validate' button."
+
+*** Table
+
+    The code lives in "client/view-b.cljs".
+
+    When the table view in "View B" is triggerd via a URL visit a dispatch event makes a
+    HTTP GET request to the server to get all the boxes the server have saved in its
+    database. It also starts a poll that each 20 seconds makes a new GET request to the
+    server to fetch new boxes.
+
+    The component have a subscriber that listens to a path in the app-db tree. If new
+    boxes arive there the component rerenders and displays the new boxes.
+
+** Server
+*** Endpoints
+
+    The server have 3 endpoints:
+
+    - "/"
+
+      This listens to request and returns the index page.
+
+    - "/box"
+
+      This endpoint supports a HTTP POST request that saves the data provides in the
+      request body to the database. After save the enpoint returns a respons that contains
+      all the boxes that the database know about.
+
+    - "/boxes"
+
+      This endpoint returns a respons that contains all the boxes that the database know
+      about when it get a HTTP GET request.
+
+*** Database
+
+    The database is Datomic "A transactional database with a flexible data model, elastic
+    scaling, and rich queries." [[https://www.datomic.com/][link]]. From my point of view this is an exelent database to
+    use together with Clojure. The query language is datastructure driven, it have a
+    schema and have a timeline built in.
+
+** System
+
+   This namespace contains specifications and functions that are shared between the client
+   and the server. The filenames have an ending on "cljc", that declares that they can be
+   read by both Clojure and ClojureScript. In =system/boxinator.cljs= we have something
+   called an entity spec. A spec is declarative way to describe enteties. Specs can have
+   generators attached to them. If they do you can generate data from the spec definition
+   that conforms to the spec.
+
+   Here is an example on how to generate a value from a ":color/g" entity.
+
+   #+BEGIN_SRC clojure :results output code
+     (s/def :color/g pos-int?)
+     (gen/generate (s/gen :color/g)) ;; => 201
+   #+END_SRC
+
+   You can also validate data through specs:
+
+   #+BEGIN_SRC clojure :results output code
+     (s/def :color/g pos-int?)
+     (s/valid? :color/g 201) ;; => true
+   #+END_SRC
+
+* Run
+** How to run app
+
+   #+BEGIN_SRC shell :results output code
+     java -cp target/boxinator.jar clojure.main -m server.core
+   #+END_SRC
+
+** How to build the app                                            :noexport:
+
+   Install Clojure and Shadow-cljs and build the uberjar is built with:
+
+   #+BEGIN_SRC shell :results output code
+     shadow-cljs release app && clojure -Auberjar
+   #+END_SRC
+
+* Test
+** Overview
+
+   There are three types of test in the test suite.
+
+   - Unit tests
+
+     Unit tests are a good way to document how a function should be used and is also a
+     good way to provide regression safety.
+
+   - Property/generative based testing
+
+     A property based test describes the arguments a function takes and the output that it
+     generates. Specs are a good way to describe the inputs and outputs.
+
+     Here is an example that lives in "system/boxinator.cljc":
+
+     #+BEGIN_SRC clojure :results output code
+       (s/fdef normalize-boxes
+         :args (s/cat :xs (s/coll-of :boxinator/box))
+         :ret :boxinator/boxes)
+     #+END_SRC
+
+     The example says that the function =normalize-boxes= takes a collection of
+     =:boxinator/box= enteties as argument and returns a normalized map.
+
+     When we run the tests on this. Test.check will run this function 1000 times with
+     randomly generated data based out of out spec. If the "fdef normalize-boxes" dont
+     conform to the rules. The test will fail.
+
+     "test.check is a Clojure property-based testing tool inspired by QuickCheck."
+
+   - Integration tests
+
+     Uses a chrom webdriver to interact with the "real" application. It filles the form
+     and validates that the data is saved in the database.
+
+** How to run test suite
+*** Locally
+
+    You need Clojure and a chrome webdriver installed to run the test suite.
+
+    Navigate to the root of the app and run:
+
+    #+BEGIN_SRC shell :results output code
+      clojure -Atest
+    #+END_SRC
+
+    If you take the time to do this, navigate to "test/integration/form-test.clj" and
+    replace =:headless? true= to =:headless? false= before runnning the test. This will
+    give a live overview of the integration test.
+
+*** Docker
+
+    Instructions on how to run the tests with docker:
+
+    #+BEGIN_SRC shell :results output code
+      docker pull circleci/clojure:openjdk-8-tools-deps-1.10.1.502-stretch-node-browsers
+      docker run -p 8080:8080 -it -v $PWD:/app circleci/clojure:openjdk-8-tools-deps-1.10.1.502-stretch-node-browsers bash
+      cd /app/
+      clojure -Atest
+    #+END_SRC
+
+* Develop
+
+  The application have been developed with Emacs, CIDER and Chromium.
+
+  To continue the developemnt install Emacs and CIDER. Go to the project in Emacs and run
+  =M-x= =cider-jack-in-clj&cljs=. After you have to REPLs go to =src/server/core.clj=.
+  Eval the buffer and run the =(-main)= in to comment block.
 
 * Update deps
 
