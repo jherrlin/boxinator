@@ -1,4 +1,4 @@
-(ns client.forms
+(ns client.input-forms
   "This namespace contains HOCs/components that are composed into form inputs. A form input
   as a component that is more sophisticated than a plain input. An example is `text`, it
   contains a label and a validation text if the input is not valid."

@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [client.events :as events]
-   [client.forms :as forms]
+   [client.input-forms :as forms]
    [clojure.spec.alpha :as s]
    [re-frame.core :as rf]
    [system.country :as country]))
