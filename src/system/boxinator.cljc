@@ -7,8 +7,8 @@
    [clojure.test.check.generators :as gen]))
 
 
-(s/def :color/g pos-int?)
-(s/def :color/r pos-int?)
+(s/def :color/g (s/int-in 0 255))
+(s/def :color/r (s/int-in 0 255))
 (s/def :box/color (s/keys :req [:color/g :color/r]))
 (s/def :box/country #{#uuid "958e0376-eb26-428a-8147-7efc04e8d3e5"
                       #uuid "837225a9-f74d-447e-87bc-49c0b58ec972"
