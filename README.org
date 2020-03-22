@@ -187,6 +187,8 @@
 
 *** TODO Docker
 
+    DOENT WORK! FIX!
+
     #+BEGIN_SRC text :results output code
       circleci@3c822ada5341:/app$ sudo npm install -g shadow-cljs && sudo shadow-cljs release app
       /usr/local/bin/shadow-cljs -> /usr/local/lib/node_modules/shadow-cljs/cli/runner.js
