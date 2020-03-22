@@ -4,16 +4,19 @@
 
 * Overview
 
+  This section provides an overview of the application. It highlight some features that
+  are worth mentioning and talk generally about other.
+
   This is an application written in Clojure/ClojureScript.
 
-  In the "src" directory this 3 directories lives. Each of them have a specific purpose
-  and here is a short description of them and the things they do.
+  The "src" directory contains 3 directories. Each of them have a specific purpose and
+  here is a short description of them and the things they do.
 
 ** Client
 
    The client is running reagent/re-frame. Reagent is a small wrapper around React and
-   re-frame is a library to use "single datastore". re-frame have events that mutates data
-   and subscribers that listens to data/changes in re-frames "app-db" datastructure.
+   re-frame is a library to use "single data store". re-frame have events that mutates data
+   and subscribers that listens to data/changes in re-frames "app-db" data structure.
 
 *** Routes
 
@@ -59,27 +62,27 @@
       that it needs. This to minimize the render cost. The highest level of the form
       abstraction is the "form" component that lives in =client/view-a.cljs=. This level
       only know about form and not about detail in its child components. It knows stuff
-      such as where the formdata lives, if the save/validate button have been pressed. In
+      such as where the form data lives, if the save/validate button have been pressed. In
       this level of detail we think about stuff like: "What should happen if the form is
-      not valid?" or "What happends when we press the 'Validate' button."
+      not valid?" or "What happens when we press the 'Validate' button."
 
 *** Table
 
     The code lives in "client/view-b.cljs".
 
-    When the table view in "View B" is triggerd via a URL visit a dispatch event makes a
+    When the table view in "View B" is triggered via a URL visit a dispatch event makes a
     HTTP GET request to the server to get all the boxes the server have saved in its
     database. It also starts a poll that each 20 seconds makes a new GET request to the
     server to fetch new boxes.
 
     The component have a subscriber that listens to a path in the app-db tree. If new
-    boxes arive there the component rerenders and displays the new boxes.
+    boxes arrive there the component re renders and displays the new boxes.
 
 *** Colour picker
 
     The colour picker cant do any kind of blue colour. When removing blue from r,g,b only
     red and green is left. The number range is from 0 to 255. This creates a two
-    dimentional vector. X axis is green from 0 to 255 and Y is the red from 0 to 255. Each
+    dimensional vector. X axis is green from 0 to 255 and Y is the red from 0 to 255. Each
     step in the axis increases by 5. The colour picker then have 2601 different colours to
     choose from.
 
@@ -95,19 +98,19 @@
     - "/box"
 
       This endpoint supports a HTTP POST request that saves the data provides in the
-      request body to the database. After save the enpoint returns a respons that contains
+      request body to the database. After save the endpoint returns a response that contains
       all the boxes that the database know about.
 
     - "/boxes"
 
-      This endpoint returns a respons that contains all the boxes that the database know
+      This endpoint returns a response that contains all the boxes that the database know
       about when it get a HTTP GET request.
 
 *** Database
 
     The database is Datomic "A transactional database with a flexible data model, elastic
-    scaling, and rich queries." [[https://www.datomic.com/][link]]. From my point of view this is an exelent database to
-    use together with Clojure. The query language is datastructure driven, it have a
+    scaling, and rich queries." [[https://www.datomic.com/][link]]. From my point of view this is an excellent database to
+    use together with Clojure. The query language is data structure driven, it have a
     schema and have a timeline built in.
 
 ** System
@@ -115,7 +118,7 @@
    This namespace contains specifications and functions that are shared between the client
    and the server. The filenames have an ending on "cljc", that declares that they can be
    read by both Clojure and ClojureScript. In =system/boxinator.cljs= we have something
-   called an entity spec. A spec is declarative way to describe enteties. Specs can have
+   called an entity spec. A spec is declarative way to describe entities. Specs can have
    generators attached to them. If they do you can generate data from the spec definition
    that conforms to the spec.
 
@@ -157,17 +160,17 @@
      #+END_SRC
 
      The example says that the function =normalize-boxes= takes a collection of
-     =:boxinator/box= enteties as argument and returns a normalized map.
+     =:boxinator/box= entities as argument and returns a normalized map.
 
      When we run the tests on this. Test.check will run this function 1000 times with
-     randomly generated data based out of out spec. If the "fdef normalize-boxes" dont
+     randomly generated data based out of out spec. If the "fdef normalize-boxes" don't
      conform to the rules. The test will fail.
 
      "test.check is a Clojure property-based testing tool inspired by QuickCheck."
 
    - Integration tests
 
-     Uses a chrom webdriver to interact with the "real" application. It filles the form
+     Uses a Chrom webdriver to interact with the "real" application. It fills the form
      and validates that the data is saved in the database.
 
 ** How to run test suite
@@ -182,12 +185,14 @@
     #+END_SRC
 
     If you take the time to do this, navigate to "test/integration/form-test.clj" and
-    replace =:headless? true= to =:headless? false= before runnning the test. This will
+    replace =:headless? true= to =:headless? false= before dunning the test. This will
     give a live overview of the integration test.
 
 *** TODO Docker
 
-    DOENT WORK! FIX!
+    DON'T WORK! FIX!
+
+    https://circleci.com/docs/2.0/docker-image-tags.json
 
     #+BEGIN_SRC text :results output code
       circleci@3c822ada5341:/app$ sudo npm install -g shadow-cljs && sudo shadow-cljs release app
@@ -299,8 +304,8 @@
     Instructions on how to run the tests with docker:
 
     #+BEGIN_SRC shell :results output code
-      docker pull circleci/clojure:openjdk-11-tools-deps-1.10.1.502-stretch-node-browsers
-      docker run -p 8080:8080 -it -w /app -v $PWD:/app circleci/clojure:openjdk-11-tools-deps-1.10.1.502-stretch-node-browsers bash
+      docker pull clojure:openjdk-8-tools-deps
+      docker run -p 8080:8080 -it -w /app -v $PWD:/app boxinator-jherrlin clojure -Atest
       npm install -g shadow-cljs && shadow-cljs release app
       clojure -Atest
     #+END_SRC
@@ -308,7 +313,7 @@
 * Run
 ** How to run app
 
-   The esiest way is maybe to run the app in Docker
+   The easiest way is maybe to run the app in Docker
 
    #+BEGIN_SRC shell :results output code
      docker run -p 8080:8080 -it -w /app -v $PWD:/app circleci/clojure:openjdk-11-tools-deps-1.10.1.502-stretch-node-browsers bash
@@ -331,7 +336,7 @@
 
   The application have been developed with Emacs, CIDER and Chromium.
 
-  To continue the developemnt install Emacs and CIDER. Go to the project in Emacs and run
+  To continue the development install Emacs and CIDER. Go to the project in Emacs and run
   =M-x= =cider-jack-in-clj&cljs=. After you have to REPLs go to =src/server/core.clj=.
   Eval the buffer and run the =(-main)= in to comment block.
 
