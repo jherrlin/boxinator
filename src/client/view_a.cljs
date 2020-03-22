@@ -3,6 +3,7 @@
   (:require
    [client.events :as events]
    [client.input-forms :as forms]
+   [client.inputs :as inputs]
    [clojure.spec.alpha :as s]
    [re-frame.core :as rf]
    [system.country :as country]))
@@ -75,24 +76,25 @@
       :visited?    save?
       :error-text  "Select a country."}]))
 
+(defn save-validate-button [save? form form-valid?]
+  [:div
+   {:style {:display "flex" :justify-content "flex-end"}}
+   [inputs/button
+    {:id "validate-save-form-button"
+     :disabled? (when save? (not form-valid?))
+     :on-click #(do (rf/dispatch [::events/form-meta form :form/save? true])
+                    (when (and save? form-valid?)
+                      (rf/dispatch [::events/save-form form])))
+     :body (if (and save? form-valid?)
+             "Save" "Validate")}]])
+
 (defn form []
-  (let [form      :boxinator/box
-        save?     @(rf/subscribe [::events/form-meta form :form/save?])
-        form-data @(rf/subscribe [::events/form form])]
+  (let [form        :boxinator/box
+        save?       @(rf/subscribe [::events/form-meta form :form/save?])
+        form-valid? @(rf/subscribe [::events/form-valid? form])]
     [:div {:style {:min-width "300px"}}
      [name {:save? save? :form form}]
      [weight {:save? save? :form form}]
      [box-colour {:save? save? :form form}]
      [countries {:save? save? :form form}]
-     [:div
-      {:style {:display "flex" :justify-content "flex-end"}}
-      [:button.btn.btn-default
-       {:id "validate-save-form-button"
-        :on-click
-        #(do (rf/dispatch [::events/form-meta form :form/save? true])
-             (when (and save?
-                        (s/valid? form form-data))
-               (rf/dispatch [::events/save-form form])))}
-       (if (and save?
-                (s/valid? form form-data))
-         "Save" "Validate")]]]))
+     [save-validate-button save? form form-valid?]]))

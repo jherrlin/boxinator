@@ -1,8 +1,7 @@
 (ns client.inputs
   (:require
-   [system.boxinator :as boxinator]
    [clojure.spec.alpha :as s]
-   [medley.core :as medley]))
+   [system.shared :as shared]))
 
 
 (defn text [{:keys [attr id on-blur on-change on-focus placeholder value]
@@ -42,23 +41,33 @@
     attr)])
 
 (defn select [{:keys [attr choices id on-focus on-select selected-id]
-               :or {on-select #(js/console.log "no `on-select` fn. But selected:" %)
-                    on-focus (fn [])}
-               :as props}]
+               :or   {on-select #(js/console.log "no `on-select` fn. But selected:" %)
+                      on-focus  (fn [])}
+               :as   props}]
   {:pre [(s/valid? :boxinator/countries choices)
          (string? id)]}
   [:select (merge
             {:id        id
              :on-focus  on-focus
              :class     "form-control"
-             :on-change #(let [choice-id (-> % (.-target) (.-value) (medley/uuid))]
+             :on-change #(let [choice-id (-> % (.-target) (.-value) (shared/str->id))]
                            (on-select (get choices choice-id)))}
             attr)
    (for [{:country/keys [id name]
-          :keys [selected?]}
-         (cond-> choices
-           selected-id (assoc-in [selected-id :selected?] true)
-           :always (vals))]
+          :keys         [selected?]}
+         (conj
+          (cond-> choices
+            selected-id (assoc-in [selected-id :selected?] true)
+            :always     (vals))
+          {:country/name "-- Select --"})]
      ^{:key (str "select-value-" id)}
      [:option {:value id :selected (when selected? true)}
       name])])
+
+
+(defn button [{:keys [id on-click body disabled?]}]
+  [:button.btn.btn-default
+   {:id "validate-save-form-button"
+    :disabled disabled?
+    :on-click on-click}
+   body])

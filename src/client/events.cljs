@@ -1,9 +1,10 @@
 (ns client.events
   (:require
-   [day8.re-frame.http-fx]
-   [client.events.routes]
-   [ajax.formats]
    [ajax.edn]
+   [ajax.formats]
+   [client.events.routes]
+   [clojure.spec.alpha :as s]
+   [day8.re-frame.http-fx]
    [re-frame.core :as re-frame]))
 
 
@@ -58,6 +59,13 @@
  ::form-meta
  (fn [db [k form attr]]
    (get-in db [:form form :meta attr])))
+
+
+(re-frame/reg-sub
+ ::form-valid?
+ (fn [db [k form]]
+   (->> (get-in db [:form form :values])
+        (s/valid? form))))
 
 
 (re-frame/reg-event-fx
