@@ -45,6 +45,12 @@
   [x]
   (medley/uuid? x))
 
+(defn str->id
+  "Convert string into id."
+  [s]
+  (when (string? s)
+    (medley/uuid s)))
+
 (defn format
   "General `format` for both clj and cljs."
   [exp s]
