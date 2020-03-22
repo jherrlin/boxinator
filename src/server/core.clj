@@ -11,7 +11,7 @@
    [ring.util.response :as response]))
 
 
-(declare stop-server)
+(defonce state (atom {:stop-server-fn nil}))
 
 (defn edn-response
   "Create HTTP response with edn body.
@@ -37,11 +37,22 @@
   (-> #'routes
       (middleware/wrap-format)))
 
-(defn start-server [port]
-  (let [stop-server-fn (httpkit.server/run-server #'handler {:port port})]
-    (def stop-server stop-server-fn)))
+(defn start-server
+  "Start the server."
+  [port]
+  (swap! state assoc :stop-server-fn
+         (httpkit.server/run-server #'handler {:port port})))
 
-(defn -main [& [port]]
+(defn stop-server
+  "Stop server."
+  []
+  (if-let [stop-server-fn (some-> @state (:stop-server-fn))]
+    (stop-server-fn)
+    (println "Server instance not found! Is it started?")))
+
+(defn -main
+  "Main entry to start the server."
+  [& [port]]
   (let [parse-port (fn [port]
                      (try
                        (Integer/parseInt port)
@@ -52,7 +63,6 @@
     (start-server port)))
 
 (comment
-  (start-server 8080)
-  (stop-server)
   (-main)
+  (stop-server)
   )
