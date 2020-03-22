@@ -60,10 +60,17 @@
        (input-xpath-str)
        (e/query (driver))))
 
-(defn fill-input-by-label [label s]
+(defn get-element-value [label]
+  (->> (e/get-element-attr (driver) (label-xpath-str label) :for)
+       (input-xpath-str)
+       (e/get-element-value (driver))))
+
+(defn fill-input-by-label
+  [label s]
   (let [el (input-element-by-label label)]
-    (e/fill-el (driver) el k/home (k/with-shift k/end) k/backspace)
-    (e/fill-human-el (driver) el s)))
+    (while (not (= s (get-element-value label)))
+      (e/fill-el (driver) el k/home (k/with-shift k/end) k/backspace)
+      (e/fill-human-el (driver) el s))))
 
 (defn click-button-with-text [s]
   (let [el (e/query (driver) (button-xpath-str s))]
