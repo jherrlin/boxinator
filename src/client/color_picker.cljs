@@ -36,6 +36,6 @@
     [pallet on-color-click]
     [selected-color color]]
    [:button.btn.btn-default
-    {:on-click (fn [] (on-done))
+    {:on-click on-done
      :style {:margin-top "5px" :margin-bottom "5px" :width "100%"}}
     "Done"]])
