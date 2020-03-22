@@ -4,7 +4,7 @@
 
 
 (defn label [hoc-component]
-  (fn [{:keys [error-text label required? valid? visited?]
+  (fn [{:keys [id error-text label required? valid? visited?]
         :or {required? false}
         :as props}]
     {:pre [(string? label)]}
@@ -12,7 +12,8 @@
      [:label {:style {:color (when (and (not valid?)
                                         visited?
                                         error-text)
-                               "#a94442")}}
+                               "#a94442")}
+              :for (when id id)}
       (str (when required? "* ") label)]
      [hoc-component props]]))
 

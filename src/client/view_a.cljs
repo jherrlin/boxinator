@@ -87,7 +87,8 @@
      [:div
       {:style {:display "flex" :justify-content "flex-end"}}
       [:button.btn.btn-default
-       {:on-click
+       {:id "validate-save-form-button"
+        :on-click
         #(do (rf/dispatch [::events/form-meta form :form/save? true])
              (when (and save?
                         (s/valid? form form-data))

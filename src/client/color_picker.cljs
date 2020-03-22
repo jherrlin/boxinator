@@ -14,7 +14,8 @@
                                      :color/b 0})}])
 
 (defn pallet [on-color-click]
-  [:div {:style {:width "255px" :height "255px"
+  [:div {:id "color-picker-pallet"
+         :style {:width "255px" :height "255px"
                  :display "flex" :flex-wrap "wrap"}}
    (for [r (range 0 255 5)
          g (range 0 255 5)]
@@ -36,6 +37,7 @@
     [pallet on-color-click]
     [selected-color color]]
    [:button.btn.btn-default
-    {:on-click on-done
+    {:id "color-picker-done-button"
+     :on-click on-done
      :style {:margin-top "5px" :margin-bottom "5px" :width "100%"}}
     "Done"]])
