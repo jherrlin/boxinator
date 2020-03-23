@@ -8,4 +8,5 @@ RUN apt-get update && apt-get -q -y install \
     && curl -s https://download.clojure.org/install/linux-install-1.10.1.492.sh | bash \
     && rm -rf /var/lib/apt/lists/* \
     && npm install -g shadow-cljs \
+    && npm install \
     && shadow-cljs release app

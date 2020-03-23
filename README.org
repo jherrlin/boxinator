@@ -174,6 +174,17 @@
      and validates that the data is saved in the database.
 
 ** How to run test suite
+*** Docker (recommended)
+
+    The easiest way is maybe to run the tests in Docker.
+
+    First build a Docker image and the start a container and run the tests from there.
+
+    #+BEGIN_SRC shell :results output code
+      docker build -t boxinator-jherrlin .
+      docker run boxinator-jherrlin clojure -Atest
+    #+END_SRC
+
 *** Locally
 
     You need Clojure and a chrome webdriver installed to run the test suite.
@@ -188,21 +199,10 @@
     replace =:headless? true= to =:headless? false= before dunning the test. This will
     give a live overview of the integration test.
 
-*** Docker
-
-    The easiest way is maybe to run the tests in Docker.
-
-    First build a Docker image and the start a container and run the tests from there.
-
-    #+BEGIN_SRC shell :results output code
-      docker build -t boxinator-jherrlin .
-      docker run boxinator-jherrlin clojure -Atest
-    #+END_SRC
-
 * Run
 ** How to run app
 
-   The easiest way is maybe to run the app in Docker.
+   The easiest way is to run the app in Docker.
 
    First build a Docker image and the start a container and run the app from there.
 
