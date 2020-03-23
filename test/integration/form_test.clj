@@ -17,7 +17,8 @@
 
 (defn start-driver []
   (swap! state assoc :driver (e/chrome {:headless (:headless? @state)
-                                        :size [1000 1200]})))
+                                        :size [1000 1200]
+                                        :args ["--no-sandbox" "--disable-dev-shm-usage"]})))
 
 (defn stop-driver []
   (e/quit (driver))

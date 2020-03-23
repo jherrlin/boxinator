@@ -188,136 +188,27 @@
     replace =:headless? true= to =:headless? false= before dunning the test. This will
     give a live overview of the integration test.
 
-*** TODO Docker
+*** Docker
 
-    DON'T WORK! FIX!
+    The easiest way is maybe to run the tests in Docker.
 
-    https://circleci.com/docs/2.0/docker-image-tags.json
-
-    #+BEGIN_SRC text :results output code
-      circleci@3c822ada5341:/app$ sudo npm install -g shadow-cljs && sudo shadow-cljs release app
-      /usr/local/bin/shadow-cljs -> /usr/local/lib/node_modules/shadow-cljs/cli/runner.js
-      + shadow-cljs@2.8.93
-      added 90 packages from 104 contributors in 24.566s
-      shadow-cljs - config: /app/shadow-cljs.edn
-      shadow-cljs - socket connect failed, server process dead?
-      shadow-cljs - starting via "clojure"
-      ==============================================================================
-      WARNING: The configured :source-paths in shadow-cljs.edn were ignored!
-               When using :deps they must be configured in deps.edn
-      ==============================================================================
-      Error building classpath. Failed to read artifact descriptor for metosin:muuntaja:jar:0.6.6
-      org.eclipse.aether.resolution.ArtifactDescriptorException: Failed to read artifact descriptor for metosin:muuntaja:jar:0.6.6
-              at org.apache.maven.repository.internal.DefaultArtifactDescriptorReader.loadPom(DefaultArtifactDescriptorReader.java:255)
-              at org.apache.maven.repository.internal.DefaultArtifactDescriptorReader.readArtifactDescriptor(DefaultArtifactDescriptorReader.java:171)
-              at org.eclipse.aether.internal.impl.DefaultRepositorySystem.readArtifactDescriptor(DefaultRepositorySystem.java:255)
-              at clojure.tools.deps.alpha.extensions.maven$eval787$fn__789.invoke(maven.clj:99)
-              at clojure.lang.MultiFn.invoke(MultiFn.java:244)
-              at clojure.tools.deps.alpha$expand_deps$fn__1191.invoke(alpha.clj:191)
-              at clojure.tools.deps.alpha$expand_deps.invokeStatic(alpha.clj:190)
-              at clojure.tools.deps.alpha$expand_deps.invoke(alpha.clj:168)
-              at clojure.tools.deps.alpha$resolve_deps.invokeStatic(alpha.clj:236)
-              at clojure.tools.deps.alpha$resolve_deps.invoke(alpha.clj:216)
-              at clojure.tools.deps.alpha.script.make_classpath2$create_classpath.invokeStatic(make_classpath2.clj:56)
-              at clojure.tools.deps.alpha.script.make_classpath2$create_classpath.invoke(make_classpath2.clj:48)
-              at clojure.tools.deps.alpha.script.make_classpath2$run_core.invokeStatic(make_classpath2.clj:82)
-              at clojure.tools.deps.alpha.script.make_classpath2$run_core.invoke(make_classpath2.clj:73)
-              at clojure.tools.deps.alpha.script.make_classpath2$run.invokeStatic(make_classpath2.clj:102)
-              at clojure.tools.deps.alpha.script.make_classpath2$run.invoke(make_classpath2.clj:96)
-              at clojure.tools.deps.alpha.script.make_classpath2$_main.invokeStatic(make_classpath2.clj:147)
-              at clojure.tools.deps.alpha.script.make_classpath2$_main.doInvoke(make_classpath2.clj:119)
-              at clojure.lang.RestFn.applyTo(RestFn.java:137)
-              at clojure.lang.Var.applyTo(Var.java:705)
-              at clojure.core$apply.invokeStatic(core.clj:665)
-              at clojure.main$main_opt.invokeStatic(main.clj:514)
-              at clojure.main$main_opt.invoke(main.clj:510)
-              at clojure.main$main.invokeStatic(main.clj:664)
-              at clojure.main$main.doInvoke(main.clj:616)
-              at clojure.lang.RestFn.applyTo(RestFn.java:137)
-              at clojure.lang.Var.applyTo(Var.java:705)
-              at clojure.main.main(main.java:40)
-      Caused by: org.eclipse.aether.resolution.ArtifactResolutionException: Could not transfer artifact metosin:muuntaja:pom:0.6.6 from/to central (https://repo1.maven.org/maven2/): Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
-              at org.eclipse.aether.internal.impl.DefaultArtifactResolver.resolve(DefaultArtifactResolver.java:424)
-              at org.eclipse.aether.internal.impl.DefaultArtifactResolver.resolveArtifacts(DefaultArtifactResolver.java:229)
-              at org.eclipse.aether.internal.impl.DefaultArtifactResolver.resolveArtifact(DefaultArtifactResolver.java:207)
-              at org.apache.maven.repository.internal.DefaultArtifactDescriptorReader.loadPom(DefaultArtifactDescriptorReader.java:240)
-              ... 27 more
-      Caused by: org.eclipse.aether.transfer.ArtifactTransferException: Could not transfer artifact metosin:muuntaja:pom:0.6.6 from/to central (https://repo1.maven.org/maven2/): Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
-              at org.eclipse.aether.connector.basic.ArtifactTransportListener.transferFailed(ArtifactTransportListener.java:52)
-              at org.eclipse.aether.connector.basic.BasicRepositoryConnector$TaskRunner.run(BasicRepositoryConnector.java:369)
-              at org.eclipse.aether.util.concurrency.RunnableErrorForwarder$1.run(RunnableErrorForwarder.java:75)
-              at org.eclipse.aether.connector.basic.BasicRepositoryConnector$DirectExecutor.execute(BasicRepositoryConnector.java:644)
-              at org.eclipse.aether.connector.basic.BasicRepositoryConnector.get(BasicRepositoryConnector.java:262)
-              at org.eclipse.aether.internal.impl.DefaultArtifactResolver.performDownloads(DefaultArtifactResolver.java:499)
-              at org.eclipse.aether.internal.impl.DefaultArtifactResolver.resolve(DefaultArtifactResolver.java:401)
-              ... 30 more
-      Caused by: javax.net.ssl.SSLException: Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
-              at java.base/sun.security.ssl.Alert.createSSLException(Alert.java:133)
-              at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:320)
-              at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:263)
-              at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:258)
-              at java.base/sun.security.ssl.SSLSocketImpl.handleException(SSLSocketImpl.java:1313)
-              at java.base/sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:408)
-              at org.apache.http.conn.ssl.SSLSocketFactory.createLayeredSocket(SSLSocketFactory.java:573)
-              at org.apache.http.conn.ssl.SSLSocketFactory.connectSocket(SSLSocketFactory.java:557)
-              at org.apache.http.conn.ssl.SSLSocketFactory.connectSocket(SSLSocketFactory.java:414)
-              at org.apache.http.impl.conn.DefaultClientConnectionOperator.openConnection(DefaultClientConnectionOperator.java:180)
-              at org.apache.http.impl.conn.ManagedClientConnectionImpl.open(ManagedClientConnectionImpl.java:326)
-              at org.apache.http.impl.client.DefaultRequestDirector.tryConnect(DefaultRequestDirector.java:610)
-              at org.apache.http.impl.client.DefaultRequestDirector.execute(DefaultRequestDirector.java:445)
-              at org.apache.http.impl.client.AbstractHttpClient.doExecute(AbstractHttpClient.java:835)
-              at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:72)
-              at org.apache.http.impl.client.CloseableHttpClient.execute(CloseableHttpClient.java:56)
-              at org.apache.http.impl.client.DecompressingHttpClient.execute(DecompressingHttpClient.java:164)
-              at org.eclipse.aether.transport.http.HttpTransporter.execute(HttpTransporter.java:290)
-              at org.eclipse.aether.transport.http.HttpTransporter.implGet(HttpTransporter.java:246)
-              at org.eclipse.aether.spi.connector.transport.AbstractTransporter.get(AbstractTransporter.java:67)
-              at org.eclipse.aether.connector.basic.BasicRepositoryConnector$GetTaskRunner.runTask(BasicRepositoryConnector.java:457)
-              at org.eclipse.aether.connector.basic.BasicRepositoryConnector$TaskRunner.run(BasicRepositoryConnector.java:364)
-              ... 35 more
-      Caused by: java.lang.RuntimeException: Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
-              at java.base/sun.security.validator.PKIXValidator.<init>(PKIXValidator.java:102)
-              at java.base/sun.security.validator.Validator.getInstance(Validator.java:181)
-              at java.base/sun.security.ssl.X509TrustManagerImpl.getValidator(X509TrustManagerImpl.java:300)
-              at java.base/sun.security.ssl.X509TrustManagerImpl.checkTrustedInit(X509TrustManagerImpl.java:176)
-              at java.base/sun.security.ssl.X509TrustManagerImpl.checkTrusted(X509TrustManagerImpl.java:189)
-              at java.base/sun.security.ssl.X509TrustManagerImpl.checkServerTrusted(X509TrustManagerImpl.java:129)
-              at java.base/sun.security.ssl.CertificateMessage$T12CertificateConsumer.checkServerCerts(CertificateMessage.java:629)
-              at java.base/sun.security.ssl.CertificateStatus$CertificateStatusConsumer.consume(CertificateStatus.java:295)
-              at java.base/sun.security.ssl.SSLHandshake.consume(SSLHandshake.java:392)
-              at java.base/sun.security.ssl.HandshakeContext.dispatch(HandshakeContext.java:443)
-              at java.base/sun.security.ssl.HandshakeContext.dispatch(HandshakeContext.java:421)
-              at java.base/sun.security.ssl.TransportContext.dispatch(TransportContext.java:177)
-              at java.base/sun.security.ssl.SSLTransport.decode(SSLTransport.java:164)
-              at java.base/sun.security.ssl.SSLSocketImpl.decode(SSLSocketImpl.java:1151)
-              at java.base/sun.security.ssl.SSLSocketImpl.readHandshakeRecord(SSLSocketImpl.java:1062)
-              at java.base/sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:402)
-              ... 51 more
-      Caused by: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
-              at java.base/java.security.cert.PKIXParameters.setTrustAnchors(PKIXParameters.java:200)
-              at java.base/java.security.cert.PKIXParameters.<init>(PKIXParameters.java:120)
-              at java.base/java.security.cert.PKIXBuilderParameters.<init>(PKIXBuilderParameters.java:104)
-              at java.base/sun.security.validator.PKIXValidator.<init>(PKIXValidator.java:99)
-              ... 66 more
-    #+END_SRC
-
-    Instructions on how to run the tests with docker:
+    First build a Docker image and the start a container and run the tests from there.
 
     #+BEGIN_SRC shell :results output code
-      docker pull clojure:openjdk-8-tools-deps
-      docker run -p 8080:8080 -it -w /app -v $PWD:/app boxinator-jherrlin clojure -Atest
-      npm install -g shadow-cljs && shadow-cljs release app
-      clojure -Atest
+      docker build -t boxinator-jherrlin .
+      docker run boxinator-jherrlin clojure -Atest
     #+END_SRC
 
 * Run
 ** How to run app
 
-   The easiest way is maybe to run the app in Docker
+   The easiest way is maybe to run the app in Docker.
+
+   First build a Docker image and the start a container and run the app from there.
 
    #+BEGIN_SRC shell :results output code
-     docker run -p 8080:8080 -it -w /app -v $PWD:/app circleci/clojure:openjdk-11-tools-deps-1.10.1.502-stretch-node-browsers bash
-     java -cp target/boxinator.jar clojure.main -m server.core
+     docker build -t boxinator-jherrlin .
+     docker run -p 8080:8080 -v $PWD:/app boxinator-jherrlin java -cp target/boxinator.jar clojure.main -m server.core
    #+END_SRC
 
    Visit http://localhost:8080/#/addbox or http://localhost:8080/#/listboxes
