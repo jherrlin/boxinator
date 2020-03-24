@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [name])
   (:require
    [client.events :as events]
-   [client.input-forms :as forms]
+   [client.form-inputs :as form-inputs]
    [client.inputs :as inputs]
    [clojure.spec.alpha :as s]
    [re-frame.core :as rf]
@@ -12,7 +12,7 @@
 (defn name [{:keys [form save?]}]
   (let [attr  :box/name
         value @(rf/subscribe [::events/form-value form attr])]
-    [forms/text
+    [form-inputs/text
      {:label       "Name"
       :id          "view-a-name"
       :placeholder "Name"
@@ -27,7 +27,7 @@
 (defn weight [{:keys [form save?]}]
   (let [attr   :box/weight
         weight @(rf/subscribe [::events/form-value form attr])]
-    [forms/number
+    [form-inputs/number
      {:label       "Weight"
       :id          "view-a-weight"
       :placeholder "Weight"
@@ -45,7 +45,7 @@
   (let [attr :box/color
         {:color/keys [g r] :as color} @(rf/subscribe [::events/form-value form attr])
         show-picker? @(rf/subscribe [::events/form-meta form :color-picker/show?])]
-    [forms/color-picker
+    [form-inputs/color-picker
      {:label          "Box colour"
       :id             "view-a-box-colour"
       :placeholder    "Click to show colour picker."
@@ -65,7 +65,7 @@
 (defn countries [{:keys [save? form]}]
   (let [attr :box/country
         value @(rf/subscribe [::events/form-value form attr])]
-    [forms/select
+    [form-inputs/select
      {:id          "view-a-countries"
       :label       "Country"
       :on-select   #(rf/dispatch [::events/form-value form attr (:country/id %)])
