@@ -4,8 +4,8 @@
 
 * Overview
 
-  This section provides an overview of the application. It highlight some features that
-  are worth mentioning and talk generally about other.
+  This section provides an overview of the application. It highlights some features that
+  are worth mentioning and talk generally about others.
 
   This is an application written in Clojure/ClojureScript.
 
@@ -20,7 +20,7 @@
 
 *** Routes
 
-    The app have support for URL routes. When a route is visited a set of events are
+    The app has support for URL routes. When a route is visited a set of events are
     dispatched.
 
 *** Form and layers
@@ -91,17 +91,17 @@
 
     The server have 3 endpoints:
 
-    - "/"
+    - =/=
 
       This listens to request and returns the index page.
 
-    - "/box"
+    - =/box=
 
       This endpoint supports a HTTP POST request that saves the data provides in the
       request body to the database. After save the endpoint returns a response that contains
       all the boxes that the database know about.
 
-    - "/boxes"
+    - =/boxes=
 
       This endpoint returns a response that contains all the boxes that the database know
       about when it get a HTTP GET request.
@@ -170,7 +170,7 @@
 
    - Integration tests
 
-     Uses a Chrom webdriver to interact with the "real" application. It fills the form
+     Uses a Chrome webdriver to interact with the "real" application. It fills the form
      and validates that the data is saved in the database.
 
 ** How to run test suite
@@ -178,7 +178,9 @@
 
     The easiest way is maybe to run the tests in Docker.
 
-    First build a Docker image and the start a container and run the tests from there.
+    Clone the repo to your desired location and navigate to the root of the app directory.
+
+    Build a Docker image and then start a container and run the tests from there.
 
     #+BEGIN_SRC shell :results output code
       docker build -t boxinator-jherrlin .
@@ -204,6 +206,8 @@
 
    The easiest way is to run the app in Docker.
 
+   Clone the repo to your desired location and navigate to the root of the app directory.
+
    First build a Docker image and the start a container and run the app from there.
 
    #+BEGIN_SRC shell :results output code
@@ -211,9 +215,11 @@
      docker run -p 8080:8080 -v $PWD:/app boxinator-jherrlin java -cp target/boxinator.jar clojure.main -m server.core
    #+END_SRC
 
-   Visit http://localhost:8080/#/addbox or http://localhost:8080/#/listboxes
+   Visit [[http://localhost:8080/#/addbox]] for the form view
 
-   http://localhost:8080 gives a combined view together with a view of the app-db.
+   and [[http://localhost:8080/#/listboxes]] for the table view.
+
+   [[http://localhost:8080]] gives a combined view together with a view of the app-db.
 
 ** How to build the app                                            :noexport:
 
@@ -231,7 +237,7 @@
   =M-x= =cider-jack-in-clj&cljs=. After you have to REPLs go to =src/server/core.clj=.
   Eval the buffer and run the =(-main)= in to comment block.
 
-* Update deps
+* Update deps                                                      :noexport:
 
   #+BEGIN_SRC shell :results output code
     clojure -Sdeps '{:deps {olical/depot {:mvn/version "1.8.4"}}}' -m depot.outdated.main
