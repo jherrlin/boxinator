@@ -44,7 +44,7 @@
       different places. For example the "label" HOC can be used on a text input to provide
       a label.
 
-    - =client/input_forms.cljs=
+    - =client/form_inputs.cljs=
 
       One level above =inputs.cljs= and =hocs.cljs= is the input-forms. input-forms are
       inputs and HOCS that are composed. For example the "text" component in input-forms
