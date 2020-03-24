@@ -30,7 +30,7 @@
 
     - =client/inputs.cljs=
 
-      This is the lowest level of the form layers. It knows detail on how to work with the
+      This is the lowest level of the form layers. It know details on how to work with the
       input. This is "raw" React and HTML. None of them have any state and they get all
       their data through props. In this level of detail we think about stuff like "Should
       we be able to react on onFocus?" or "Should there be a default placeholder for the
@@ -46,10 +46,10 @@
 
     - =client/form_inputs.cljs=
 
-      One level above =inputs.cljs= and =hocs.cljs= is the input-forms. input-forms are
-      inputs and HOCS that are composed. For example the "text" component in input-forms
+      One level above =inputs.cljs= and =hocs.cljs= is the form-inputs. form-inputs are
+      inputs and HOCS that are composed. For example the "text" component in form-inputs
       is a HTML text input with a label on top, have colored markdown depending on how it
-      validates and have the ability to auto focus. The text input-form is a pure
+      validates and have the ability to auto focus. The text form-input is a pure
       component that only works with props. On this level of abstraction we think about
       stuff like: "Should the label in this text input form be able to have a '*' if the
       field is required?" or "Does this text input form need color markdown to show
@@ -61,7 +61,7 @@
       component works with. Each component in the form only subscribes on the app-db path
       that it needs. This to minimize the render cost. The highest level of the form
       abstraction is the "form" component that lives in =client/view-a.cljs=. This level
-      only know about form and not about detail in its child components. It knows stuff
+      only know about form and not about details in its child components. It knows stuff
       such as where the form data lives, if the save/validate button have been pressed. In
       this level of detail we think about stuff like: "What should happen if the form is
       not valid?" or "What happens when we press the 'Validate' button."
