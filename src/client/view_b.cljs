@@ -1,19 +1,28 @@
 (ns client.view-b
   (:require
-   [client.color-picker :as color-picker]
    [client.events :as events]
-   [client.routes :as routes]
-   [re-com.core :as re-com]
-   [client.view-a :as view-a]
-   [re-frame.core :as rf]
-   [reagent.core :as reagent]
-   [system.boxinator :as boxinator]
-   [system.country :as country]
-   [system.shared :as shared]))
+   [re-frame.core :as rf]))
 
+
+(defn sums [total-cost total-weight]
+  [:<>
+   [:div "Total weight: " total-weight]
+   [:div "Total cost: " total-cost]])
+
+(defn row [{:box/keys [color id name weight]
+            :keys [shipping-cost background-color]
+            :as box}]
+  (let [{:color/keys [r g]} color]
+    [:tr {:id id}
+     [:td name]
+     [:td (str weight " kilograms")]
+     [:td {:style {:background-color background-color}}]
+     [:td (str shipping-cost " Sek")]]))
 
 (defn table []
-  (let [boxes @(rf/subscribe [:boxes])]
+  (let [boxes        @(rf/subscribe [:boxes])
+        total-cost   @(rf/subscribe [::events/total-cost])
+        total-weight @(rf/subscribe [::events/total-weight])]
     [:div {:style {:width "100%"}}
      [:table.table {:style {:width "100%"}}
       [:thead
@@ -23,21 +32,8 @@
         [:th "Box color"]
         [:th "Shipping cost"]]]
       [:tbody
-       (for [{:box/keys [color country id name weight] :as box} (shared/denormalize boxes)]
+       (for [{:box/keys [id] :as box} boxes]
          ^{:key id}
-         [:tr {:id id}
-          [:td name]
-          [:td (str weight " kilograms")]
-          (let [{:color/keys [r g]} color]
-            [:td {:style {:background-color (color-picker/rgb-str r g)}}])
-          [:td (str (shared/round-floor-to-2-deciamls
-                     (* weight (country/multiplier country))) " Sek")]])]]
-     [:div "Total weight: " (when boxes
-                              (-> boxes
-                                  (shared/denormalize)
-                                  (boxinator/total-weight)))]
-     [:div "Total cost: " (when boxes
-                            (-> boxes
-                                (shared/denormalize)
-                                (boxinator/total-cost)
-                                (shared/round-floor-to-2-deciamls)))]]))
+         [row box])]]
+     (when boxes
+       [sums total-cost total-weight])]))

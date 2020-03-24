@@ -2,10 +2,14 @@
   (:require
    [ajax.edn]
    [ajax.formats]
+   [client.color-picker :as color-picker]
    [client.events.routes]
    [clojure.spec.alpha :as s]
    [day8.re-frame.http-fx]
-   [re-frame.core :as re-frame]))
+   [re-frame.core :as re-frame]
+   [system.boxinator :as boxinator]
+   [system.country :as country]
+   [system.shared :as shared]))
 
 
 (re-frame/reg-event-db
@@ -66,6 +70,39 @@
  (fn [db [k form]]
    (->> (get-in db [:form form :values])
         (s/valid? form))))
+
+
+(re-frame/reg-sub
+ ::total-weight
+ (fn [db [k]]
+   (some->> db
+            (:boxes)
+            (shared/denormalize)
+            (boxinator/total-weight))))
+
+
+(re-frame/reg-sub
+ ::total-cost
+ (fn [db [k]]
+   (some->> db
+            (:boxes)
+            (shared/denormalize)
+            (boxinator/total-cost)
+            (shared/round-floor-to-2-deciamls))))
+
+
+(re-frame/reg-sub
+ :boxes
+ (fn [db [k]]
+   (->> db
+        (:boxes)
+        (shared/denormalize)
+        (mapv (fn [{:box/keys [color country id name weight] :as box}]
+                (let [{:color/keys [r g]} color]
+                  (assoc box
+                         :background-color (color-picker/rgb-str r g)
+                         :shipping-cost (shared/round-floor-to-2-deciamls
+                                         (* weight (country/multiplier country))))))))))
 
 
 (re-frame/reg-event-fx
