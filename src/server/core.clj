@@ -38,8 +38,9 @@
       (middleware/wrap-format)))
 
 (defn start-server
-  "Start the server."
+  "Connect a new db instance and start the server."
   [port]
+  (db/connect!)
   (swap! state assoc :stop-server-fn
          (httpkit.server/run-server #'handler {:port port})))
 
@@ -47,7 +48,9 @@
   "Stop server."
   []
   (if-let [stop-server-fn (some-> @state (:stop-server-fn))]
-    (stop-server-fn)
+    (do
+      (db/disconnect!)
+      (stop-server-fn))
     (println "Server instance not found! Is it started?")))
 
 (defn -main
