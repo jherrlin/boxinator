@@ -30,7 +30,7 @@
 (defn stop-server []
   (server.core/stop-server))
 
-(defn go [url]
+(defn go [form-link]
   (-> (driver)
       (e/go form-link)))
 
