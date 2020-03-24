@@ -78,6 +78,9 @@
     The component have a subscriber that listens to a path in the app-db tree. If new
     boxes arrive there the component re renders and displays the new boxes.
 
+    All calculations and data manipulation is in the subscriber/dispatch. No data
+    manipulation should be done in the React components.
+
 *** Colour picker
 
     The colour picker cant do any kind of blue colour. When removing blue from r,g,b only
