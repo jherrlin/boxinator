@@ -8,6 +8,7 @@
 (t/deftest test-save-and-get-box
   (t/testing "[INTEGRATION] Generate a box from spec, save it and the retrieve it."
     (let [{:box/keys [id] :as box} (gen/generate (s/gen :boxinator/box))]
+      (sut/connect!)
       (sut/save-box box)
       (t/is (= box
                (get (sut/get-boxes) id))))))

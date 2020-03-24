@@ -25,7 +25,7 @@
       [:tbody
        (for [{:box/keys [color country id name weight] :as box} (shared/denormalize boxes)]
          ^{:key id}
-         [:tr
+         [:tr {:id id}
           [:td name]
           [:td (str weight " kilograms")]
           (let [{:color/keys [r g]} color]
