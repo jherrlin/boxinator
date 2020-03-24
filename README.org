@@ -171,7 +171,9 @@
    - Integration tests
 
      Uses a Chrome webdriver to interact with the "real" application. It fills the form
-     and validates that the data is saved in the database.
+     and validates that the data is saved in the database. For the table view it saves 3
+     boxes to the database. It checks that all 3 IDs exists in the DOM. For one of them it
+     ensures that the rendered HTML is correct.
 
 ** How to run test suite
 *** Docker (recommended)
