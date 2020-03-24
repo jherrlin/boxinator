@@ -15,7 +15,7 @@
                       #uuid "b1ace9ef-c1fa-4c00-94fc-97db4618c245"
                       #uuid "8b759afd-1e0e-40ef-aecb-a3e48db4056e"})
 (s/def :box/id ::shared/uuid)
-(s/def :box/name string?)
+(s/def :box/name ::shared/non-blank-string)
 (s/def :box/weight pos-int?)
 (s/def :boxinator/box
   (s/keys :req [:box/color
