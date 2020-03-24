@@ -18,7 +18,7 @@
                        :country #uuid "b1ace9ef-c1fa-4c00-94fc-97db4618c245"
                        :id #uuid "84825c36-538d-4d19-969e-d3bbec096b47",
                        :weight 10 ;; 86
-                       :name "",}
+                       :name "a",}
                  #:box{:color #:color{:g 2, :r 2},
                        :country #uuid "837225a9-f74d-447e-87bc-49c0b58ec972"
                        :id #uuid "671ac9fa-2866-4455-8544-52e1c19768ff",
@@ -33,7 +33,7 @@
                        :country #uuid "b1ace9ef-c1fa-4c00-94fc-97db4618c245"
                        :id #uuid "84825c36-538d-4d19-969e-d3bbec096b47",
                        :weight 10 ;; 86
-                       :name "",}
+                       :name "a",}
                  #:box{:color #:color{:g 2, :r 2},
                        :country #uuid "837225a9-f74d-447e-87bc-49c0b58ec972"
                        :id #uuid "671ac9fa-2866-4455-8544-52e1c19768ff",
