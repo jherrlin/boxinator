@@ -31,8 +31,7 @@
   [k xs]
   (when k
     (->> xs
-         (map (fn [{id k :as x}]
-                {id x}))
+         (map (juxt k identity))
          (into {}))))
 
 (defn id
