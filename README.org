@@ -217,7 +217,7 @@
 
    #+BEGIN_SRC shell :results output code
      docker build -t boxinator-jherrlin .
-     docker run -p 8080:8080 -v $PWD:/app boxinator-jherrlin java -cp target/boxinator.jar clojure.main -m server.core
+     docker run -p 8080:8080 boxinator-jherrlin java -cp target/boxinator.jar clojure.main -m server.core
    #+END_SRC
 
    Visit [[http://localhost:8080/#/addbox]] for the form view
