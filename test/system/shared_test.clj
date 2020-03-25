@@ -40,3 +40,8 @@
         (= (apply sut/round-floor-to-2-deciamls args-vector) expected)
       [51.599999999999994] "51.60"
       [51] "51.00")))
+
+(t/deftest test-rgb-str
+  (t/testing "[UNIT] Generate rgb string."
+    (t/is (= (sut/rgb-str 255 255)
+             "rgb(255,255,0)"))))

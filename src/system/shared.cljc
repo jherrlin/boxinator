@@ -61,3 +61,6 @@
   [f]
   (->> (double f)
        (format "%.2f")))
+
+(defn rgb-str [r g]
+  (str "rgb(" (str/join "," [r g 0]) ")"))
