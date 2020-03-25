@@ -5,9 +5,9 @@
                  :asset-path        "/js"
                  :module-hash-names true
                  :modules           {:app {:init-fn client.core/init
-                                            :entries [client.core]
-                                            ;; :preloads [day8.re-frame-10x.preload]
-                                            }}
+                                           :entries [client.core]
+                                           ;; :preloads [day8.re-frame-10x.preload]
+                                           }}
                  :output-dir        "resources/public/js"}}
  :nrepl        {:port       8777
                 :middleware [refactor-nrepl.middleware/wrap-refactor]}}

@@ -220,7 +220,7 @@
    First build a Docker image and the start a container and run the app from there.
 
    #+BEGIN_SRC shell :results output code
-     docker run -p 8080:8080 jherrlin/boxinator:latest java -cp target/boxinator.jar clojure.main -m server.core
+     docker run -p 8080:8080 jherrlin/boxinator:latest java -cp target/app.jar clojure.main -m server.core
    #+END_SRC
 
    Visit [[http://localhost:8080/#/addbox]] for the form view

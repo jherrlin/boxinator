@@ -11,5 +11,6 @@ RUN apt-get update && apt-get -q -y install \
     && npm install \
     && clojure -R:default-deps \
     && clojure -R:test \
+    && rm -rf .shadow-cljs target \
     && shadow-cljs release app \
     && clojure -Auberjar
