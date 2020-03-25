@@ -186,11 +186,9 @@
 ** How to run test suite
 *** Docker (recommended)
 
-    The easiest way is maybe to run the tests in Docker.
+    The easiest way is to run the tests in Docker.
 
-    Clone the repo to your desired location and navigate to the root of the app directory.
-
-    Build a Docker image and then start a container and run the tests from there.
+    This runs the test from a prebuilt Docker image.
 
     #+BEGIN_SRC shell :results output code
       docker run jherrlin/boxinator:latest clojure -Atest
@@ -211,31 +209,20 @@
     give a live overview of the integration test.
 
 * Run
-** How to run app
 
-   The easiest way is to run the app in Docker.
+  The easiest way is to run the app in Docker.
 
-   Clone the repo to your desired location and navigate to the root of the app directory.
+  This runs the app from a prebuilt Docker image.
 
-   First build a Docker image and the start a container and run the app from there.
+  #+BEGIN_SRC shell :results output code
+    docker run -p 8080:8080 jherrlin/boxinator:latest java -cp target/app.jar clojure.main -m server.core
+  #+END_SRC
 
-   #+BEGIN_SRC shell :results output code
-     docker run -p 8080:8080 jherrlin/boxinator:latest java -cp target/app.jar clojure.main -m server.core
-   #+END_SRC
+  Visit [[http://localhost:8080/#/addbox]] for the form view
 
-   Visit [[http://localhost:8080/#/addbox]] for the form view
+  and [[http://localhost:8080/#/listboxes]] for the table view.
 
-   and [[http://localhost:8080/#/listboxes]] for the table view.
-
-   [[http://localhost:8080]] gives a combined view together with a view of the app-db.
-
-** How to build the app                                            :noexport:
-
-   Install Clojure and Shadow-cljs and build the uberjar is built with:
-
-   #+BEGIN_SRC shell :results output code
-     shadow-cljs release app && clojure -Auberjar
-   #+END_SRC
+  [[http://localhost:8080]] gives a combined view together with a view of the app-db.
 
 * Develop
 
