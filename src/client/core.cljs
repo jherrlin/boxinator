@@ -27,7 +27,7 @@
             :children [[view-a/form]
                        [view-b/table]
                        [app-db-pre]]]
-    [:div "something when wrong..."]))
+    [:div "loading..."]))
 
 (defn show-panel [panel-name]
   [panels panel-name])
