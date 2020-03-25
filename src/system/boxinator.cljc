@@ -79,6 +79,11 @@
                    :shipping-cost (shared/round-floor-to-2-deciamls
                                    (* weight (country/multiplier country)))))))))
 
+(defn assoc-box-form
+  "Populare the db with a `:boxinator/box` form containing default values."
+  [db]
+  (assoc-in db [:form :boxinator/box :values :box/id] (shared/id)))
+
 
 (comment
   ;; single

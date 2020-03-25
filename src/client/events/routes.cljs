@@ -5,6 +5,7 @@
    [ajax.formats]
    [day8.re-frame.http-fx]
    [re-frame.core :as re-frame]
+   [system.boxinator :as boxinator]
    [system.shared :as shared]))
 
 
@@ -19,7 +20,8 @@
  (fn [db [_ form results-from-server]]
    (-> db
        (assoc :boxes results-from-server)
-       (assoc-in [:form form] {}))))
+       (assoc-in [:form form] {})
+       (boxinator/assoc-box-form))))
 
 
 (re-frame/reg-event-db
@@ -70,7 +72,7 @@
  (fn [{:keys [db] :as cofx} [k]]
    {:db       (-> db
                   (assoc :active-panel :form)
-                  (assoc-in [:form :boxinator/box :values :box/id] (shared/id)))
+                  (boxinator/assoc-box-form))
     :interval {:action :stop
                :id     :get-query}}))
 
@@ -96,7 +98,7 @@
  (fn [{:keys [db] :as cofx} [k]]
    {:db         (-> db
                     (assoc :active-panel :main)
-                    (assoc-in [:form :boxinator/box :values :box/id] (shared/id)))
+                    (boxinator/assoc-box-form))
     :http-xhrio {:method          :get
                  :uri             "http://localhost:8080/boxes"
                  :timeout         5000

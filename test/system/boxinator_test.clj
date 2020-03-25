@@ -3,7 +3,8 @@
    [clojure.spec.test.alpha :as stest]
    [clojure.test :as t]
    [common-test]
-   [system.boxinator :as sut]))
+   [system.boxinator :as sut]
+   [system.shared :as shared]))
 
 
 (t/deftest test-normalize-boxes
@@ -51,3 +52,9 @@
           {:keys [background-color shipping-cost]} (->> altered-boxes (first))]
       (t/is (= background-color "rgb(0,0,0)"))
       (t/is (= shipping-cost "86.00")))))
+
+(t/deftest test-assoc-box-form
+  (t/testing "[UNIT] Populare the db with a `:boxinator/box` form containing default values."
+    (t/is (-> (sut/assoc-box-form {})
+              :form :boxinator/box :values :box/id
+              (shared/id?)))))
