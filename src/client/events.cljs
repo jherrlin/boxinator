@@ -97,12 +97,7 @@
    (->> db
         (:boxes)
         (shared/denormalize)
-        (mapv (fn [{:box/keys [color country id name weight] :as box}]
-                (let [{:color/keys [r g]} color]
-                  (assoc box
-                         :background-color (color-picker/rgb-str r g)
-                         :shipping-cost (shared/round-floor-to-2-deciamls
-                                         (* weight (country/multiplier country))))))))))
+        (boxinator/assoc-boxes-attributes))))
 
 
 (re-frame/reg-event-fx

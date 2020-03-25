@@ -2,9 +2,9 @@
   "This namespace contains specs and functions tightly related to boxinator enteties."
   (:require
    [clojure.spec.alpha :as s]
-   [system.shared :as shared]
+   [clojure.test.check.generators :as gen]
    [system.country :as country]
-   [clojure.test.check.generators :as gen]))
+   [system.shared :as shared]))
 
 
 (s/def :color/g (s/int-in 0 255))
@@ -64,6 +64,20 @@
           (+ i
              (* weight (country/multiplier country))))
         0)))
+
+(defn assoc-boxes-attributes
+  "Assoc data to boxes before it goes to view.
+  The attributes that are assoced on are: `:background-color` and `:shipping-cost`. This
+  keys are not namespaced. This tells that they are not part of the `box` entity."
+  [boxes]
+  (->> boxes
+       (mapv
+        (fn [{:box/keys [color country weight] :as box}]
+          (let [{:color/keys [r g]} color]
+            (assoc box
+                   :background-color (shared/rgb-str r g)
+                   :shipping-cost (shared/round-floor-to-2-deciamls
+                                   (* weight (country/multiplier country)))))))))
 
 
 (comment

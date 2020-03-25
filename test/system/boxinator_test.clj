@@ -39,3 +39,15 @@
                        :id #uuid "671ac9fa-2866-4455-8544-52e1c19768ff",
                        :weight 10 ;; cost 40
                        :name "X"}])))))
+
+(t/deftest test-assoc-boxes-attributes
+  (t/testing "[UNIT] Testing that assoc temp values are correct"
+    (let [altered-boxes (sut/assoc-boxes-attributes
+                         [#:box{:color #:color{:g 0, :r 0},
+                                :country #uuid "b1ace9ef-c1fa-4c00-94fc-97db4618c245"
+                                :id #uuid "84825c36-538d-4d19-969e-d3bbec096b47",
+                                :weight 10
+                                :name "a"}])
+          {:keys [background-color shipping-cost]} (->> altered-boxes (first))]
+      (t/is (= background-color "rgb(0,0,0)"))
+      (t/is (= shipping-cost "86.00")))))
