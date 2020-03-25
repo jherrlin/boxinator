@@ -9,4 +9,7 @@ RUN apt-get update && apt-get -q -y install \
     && rm -rf /var/lib/apt/lists/* \
     && npm install -g shadow-cljs \
     && npm install \
-    && shadow-cljs release app
+    && clojure -R:default-deps \
+    && clojure -R:test \
+    && shadow-cljs release app \
+    && clojure -Auberjar

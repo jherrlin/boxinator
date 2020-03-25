@@ -193,8 +193,7 @@
     Build a Docker image and then start a container and run the tests from there.
 
     #+BEGIN_SRC shell :results output code
-      docker build -t boxinator-jherrlin .
-      docker run boxinator-jherrlin clojure -Atest
+      docker run jherrlin/boxinator:latest clojure -Atest
     #+END_SRC
 
 *** Locally
@@ -221,8 +220,7 @@
    First build a Docker image and the start a container and run the app from there.
 
    #+BEGIN_SRC shell :results output code
-     docker build -t boxinator-jherrlin .
-     docker run -p 8080:8080 boxinator-jherrlin java -cp target/boxinator.jar clojure.main -m server.core
+     docker run -p 8080:8080 jherrlin/boxinator:latest java -cp target/boxinator.jar clojure.main -m server.core
    #+END_SRC
 
    Visit [[http://localhost:8080/#/addbox]] for the form view
@@ -252,4 +250,14 @@
   #+BEGIN_SRC shell :results output code
     clojure -Sdeps '{:deps {olical/depot {:mvn/version "1.8.4"}}}' -m depot.outdated.main
     clojure -Sdeps '{:deps {olical/depot {:mvn/version "1.8.4"}}}' -m depot.outdated.main --update
+  #+END_SRC
+
+* Docker Hub                                                       :noexport:
+
+  Instructions on how to build, tag and push to Docker Hub.
+
+  #+BEGIN_SRC shell :results output code
+    docker build -t boxinator-jherrlin .
+    docker tag boxinator-jherrlin:latest jherrlin/boxinator:latest
+    docker push jherrlin/boxinator:latest
   #+END_SRC
