@@ -142,6 +142,11 @@
 * Tests
 ** Overview
 
+   As Clojure and ClojureScript can share code. Almost all data manipulation functions on
+   the client side is moved into shared namespaces that both Clojure and ClojureScript can
+   use. This makes the code possible to test on the Clojure side. One benefit of this is
+   that it reduces the time it takes for the test suite to run.
+
    There are three types of test in the test suite.
 
    - Unit tests
