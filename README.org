@@ -9,19 +9,14 @@
 
   This is an application written in Clojure/ClojureScript.
 
-  The "src" directory contains 3 directories. Each of them have a specific purpose and
+  The =src= directory contains 3 directories. Each of them have a specific purpose and
   here is a short description of them and the things they do.
 
 ** Client
 
-   The client is running reagent/re-frame. Reagent is a small wrapper around React and
-   re-frame is a library to use "single data store". re-frame have events that mutates data
-   and subscribers that listens to data/changes in re-frames "app-db" data structure.
-
-*** Routes
-
-    The app has support for URL routes. When a route is visited a set of events are
-    dispatched.
+   The client is running Reagent/Re-frame. Reagent is a small wrapper around React and
+   Re-frame is a library to use "single data store". Re-frame have events that mutates data
+   and subscribers that listens to data/changes in Re-frames "app-db" data structure.
 
 *** Form and layers
 
@@ -55,12 +50,12 @@
       field is required?" or "Does this text input form need color markdown to show
       validation errors?".
 
-    - =client/view-a.cljs=
+    - =client/view_a.cljs=
 
       This is the top levels of the form abstraction. Here we declare what data each
       component works with. Each component in the form only subscribes on the app-db path
       that it needs. This to minimize the render cost. The highest level of the form
-      abstraction is the "form" component that lives in =client/view-a.cljs=. This level
+      abstraction is the "form" component that lives in =client/view_a.cljs=. This level
       only know about form and not about details in its child components. It knows stuff
       such as where the form data lives, if the save/validate button have been pressed. In
       this level of detail we think about stuff like: "What should happen if the form is
@@ -68,7 +63,7 @@
 
 *** Table
 
-    The code lives in "client/view-b.cljs".
+    The code lives in =client/view_b.cljs=.
 
     When the table view in "View B" is triggered via a URL visit a dispatch event makes a
     HTTP GET request to the server to get all the boxes the server have saved in its
@@ -119,9 +114,9 @@
 ** System
 
    This namespace contains specifications and functions that are shared between the client
-   and the server. The filenames have an ending on "cljc", that declares that they can be
+   and the server. The filenames have an ending "cljc", that declares that they can be
    read by both Clojure and ClojureScript. In =system/boxinator.cljs= we have something
-   called an entity spec. A spec is declarative way to describe entities. Specs can have
+   called an entity spec. A spec is a declarative way to describe entities. Specs can have
    generators attached to them. If they do you can generate data from the spec definition
    that conforms to the spec.
 
@@ -170,9 +165,9 @@
      The example says that the function =normalize-boxes= takes a collection of
      =:boxinator/box= entities as argument and returns a normalized map.
 
-     When we run the tests on this. Test.check will run this function 1000 times with
-     randomly generated data based out of out spec. If the "fdef normalize-boxes" don't
-     conform to the rules. The test will fail.
+     When we run the tests on this. =Test.check= will run this function 1000 times with
+     randomly generated data based out of out for the =:boxinator/box= spec. If the "fdef
+     normalize-boxes" don't conform to the rules. The test will fail.
 
      "test.check is a Clojure property-based testing tool inspired by QuickCheck."
 
@@ -196,7 +191,7 @@
 
 *** Locally
 
-    You need Clojure and a chrome webdriver installed to run the test suite.
+    You need Clojure and a Chrome webdriver installed to run the test suite.
 
     Navigate to the root of the app and run:
 
@@ -204,9 +199,9 @@
       clojure -Atest
     #+END_SRC
 
-    If you take the time to do this, navigate to "test/integration/form-test.clj" and
-    replace =:headless? true= to =:headless? false= before dunning the test. This will
-    give a live overview of the integration test.
+    If you take the time to do this, navigate to =test/integration/form-test.clj= and
+    replace =:headless? true= to =:headless? false= before running the tests. This will
+    give a live view of the integration tests.
 
 * Run
 
@@ -228,11 +223,13 @@
 
   The application have been developed with Emacs, CIDER and Chromium.
 
-  To continue the development install Emacs and CIDER. Go to the project in Emacs and run
-  =M-x= =cider-jack-in-clj&cljs=. After you have to REPLs go to =src/server/core.clj=.
-  Eval the buffer and run the =(-main)= in to comment block.
+  To continue the development install Emacs, CIDER and Chrome webdriver. Go to the project
+  in Emacs and run =M-x= =cider-jack-in-clj&cljs=. After you have two REPLs go to
+  =src/server/core.clj=. Eval the buffer and run the =(-main)= in to comment block.
 
 * Update deps                                                      :noexport:
+
+  Instructions on how to update dependencies.
 
   #+BEGIN_SRC shell :results output code
     clojure -Sdeps '{:deps {olical/depot {:mvn/version "1.8.4"}}}' -m depot.outdated.main
