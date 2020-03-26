@@ -44,7 +44,7 @@
  :request/get
  (fn [{:keys [db]} [_]]
    {:http-xhrio {:method          :get
-                 :uri             "http://localhost:8080/boxes"
+                 :uri             "http://localhost:8080/api/boxes"
                  :timeout         5000
                  :response-format (ajax.edn/edn-response-format)
                  :on-success      [:request/success]
@@ -82,7 +82,7 @@
  (fn [{:keys [db] :as cofx} [k]]
    {:db         (assoc db :active-panel :table)
     :http-xhrio {:method          :get
-                 :uri             "http://localhost:8080/boxes"
+                 :uri             "http://localhost:8080/api/boxes"
                  :timeout         5000
                  :response-format (ajax.edn/edn-response-format)
                  :on-success      [:request/success]
@@ -100,7 +100,7 @@
                     (assoc :active-panel :main)
                     (boxinator/assoc-box-form))
     :http-xhrio {:method          :get
-                 :uri             "http://localhost:8080/boxes"
+                 :uri             "http://localhost:8080/api/boxes"
                  :timeout         5000
                  :response-format (ajax.edn/edn-response-format)
                  :on-success      [:request/success]
